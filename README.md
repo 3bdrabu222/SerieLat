@@ -34,10 +34,6 @@ To run this project locally, follow these steps:
    ```
    The app will be available at `http://localhost:5173/`.
 
-## 🌐 Live Demo
-You can check the live version of the website here:
-[SerieLat Live](#) *(Add your live URL here when deployed)*
-
 ## 🛠 Technologies Used
 - React.js
 - Vite
