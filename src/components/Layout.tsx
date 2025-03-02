@@ -5,7 +5,11 @@ import { cn, TMDB_API_KEY, TMDB_BASE_URL } from '../lib/utils';
 import { TVSeries } from '../types';
 
 export function Layout() {
-  const [darkMode, setDarkMode] = React.useState(false);
+  const [darkMode, setDarkMode] = React.useState(() => {
+    // Check localStorage first, if not available default to true (dark mode)
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode !== null ? JSON.parse(savedMode) : true;
+  });
   const [searchQuery, setSearchQuery] = React.useState('');
   const [searchResults, setSearchResults] = React.useState<TVSeries[]>([]);
   const [isSearching, setIsSearching] = React.useState(false);
@@ -19,6 +23,8 @@ export function Layout() {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    // Save preference to localStorage
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
   }, [darkMode]);
 
   React.useEffect(() => {
@@ -64,6 +70,10 @@ export function Layout() {
         console.error('Error fetching search results:', error);
       }
     }, 300);
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(prevMode => !prevMode);
   };
 
   return (
@@ -158,8 +168,10 @@ export function Layout() {
               </Link>
               
               <button
-                onClick={() => setDarkMode(!darkMode)}
+                onClick={toggleDarkMode}
                 className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300"
+                aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+                title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
               >
                 {darkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
               </button>

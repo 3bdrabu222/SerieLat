@@ -91,6 +91,7 @@ export function Genres() {
   const navigate = useNavigate();
   const [genresWithShows, setGenresWithShows] = React.useState<GenreWithShow[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [selectedGenre, setSelectedGenre] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     async function fetchGenresAndShows() {
@@ -129,47 +130,101 @@ export function Genres() {
     fetchGenresAndShows();
   }, []);
 
+  const handleGenreClick = (genreId: number) => {
+    setSelectedGenre(genreId);
+    
+    // Add a small delay for the animation to complete
+    setTimeout(() => {
+      navigate(`/genre/${genreId}`);
+    }, 300);
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-600 border-t-transparent dark:border-red-500" />
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-14 w-14 border-4 border-red-600 border-t-transparent dark:border-red-500" />
+          <p className="text-gray-600 dark:text-gray-400 animate-pulse">Loading genres...</p>
+        </div>
       </div>
     );
   }
 
+  // Container variants for staggered animation
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  // Item variants for individual card animations
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { 
+        type: "spring", 
+        stiffness: 100,
+        damping: 12
+      }
+    }
+  };
+
   return (
     <motion.div 
-      className="py-8"
+      className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <h1 className="text-4xl font-bold text-center mb-4">Browse by Genre</h1>
-      <p className="text-center text-gray-600 dark:text-gray-400 mb-12">
-        Discover TV shows across different genres
-      </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {genresWithShows.map((genre, index) => (
+      <div className="text-center mb-16">
+        <motion.h1 
+          className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-purple-600 mb-4"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          Browse by Genre
+        </motion.h1>
+        <motion.p 
+          className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          Discover TV shows across different genres and expand your viewing experience
+        </motion.p>
+      </div>
+      
+      <motion.div 
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {genresWithShows.map((genre) => (
           <motion.div
             key={genre.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.3,
-              delay: index % 12 * 0.1,
-              type: "spring",
-              stiffness: 100
-            }}
+            variants={itemVariants}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className={`${selectedGenre === genre.id ? 'z-10' : 'z-0'}`}
           >
             <GenreCard
               id={genre.id}
               name={genre.name}
               show={genre.show}
-              onClick={() => navigate(`/genre/${genre.id}`)}
+              onClick={() => handleGenreClick(genre.id)}
             />
           </motion.div>
         ))}
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
