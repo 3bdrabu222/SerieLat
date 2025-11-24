@@ -4,6 +4,7 @@ import { Star, Calendar, Eye } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { TVSeries } from '../types';
 import { TMDB_IMAGE_BASE_URL, cn } from '../lib/utils';
+import { AddToFavoriteButton } from './AddToFavoriteButton';
 
 interface SeriesCardProps {
   series: TVSeries;
@@ -26,7 +27,7 @@ export function SeriesCard({ series, isHovered = false }: SeriesCardProps) {
   return (
     <Link
       to={`/series/${series.id}`}
-      className="block h-full"
+      className="block h-full group"
     >
       <motion.div 
         className={cn(
@@ -71,6 +72,20 @@ export function SeriesCard({ series, isHovered = false }: SeriesCardProps) {
           <div className="absolute top-2 right-2 flex items-center space-x-1 bg-black/70 text-yellow-400 px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
             <Star className="w-3 h-3" />
             <span>{series.vote_average?.toFixed(1)}</span>
+          </div>
+          
+          {/* Favorite Button */}
+          <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <AddToFavoriteButton
+              movieId={series.id.toString()}
+              movieTitle={series.name}
+              moviePoster={series.poster_path}
+              movieOverview={series.overview}
+              movieRating={series.vote_average}
+              movieReleaseDate={series.first_air_date}
+              movieType="tv"
+              variant="icon"
+            />
           </div>
           
           {/* Gradient Overlay */}

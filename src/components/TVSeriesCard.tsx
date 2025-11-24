@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { TVSeries } from '../types';
 import { TMDB_IMAGE_BASE_URL } from '../lib/utils';
+import { AddToFavoriteButton } from './AddToFavoriteButton';
 
 interface TVSeriesCardProps {
   series: TVSeries;
@@ -24,6 +25,21 @@ export function TVSeriesCard({ series }: TVSeriesCardProps) {
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
+        
+        {/* Favorite Button */}
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+          <AddToFavoriteButton
+            movieId={series.id.toString()}
+            movieTitle={series.name}
+            moviePoster={series.poster_path}
+            movieOverview={series.overview}
+            movieRating={series.vote_average}
+            movieReleaseDate={series.first_air_date}
+            movieType="tv"
+            variant="icon"
+          />
+        </div>
+        
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="absolute bottom-0 left-0 right-0 p-4">
             <h3 className="text-white font-semibold line-clamp-2 mb-2">{series.name}</h3>

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { Tv, Search, Moon, Sun, ListFilter, Calendar, X } from 'lucide-react';
+import { Tv, Search, Moon, Sun, ListFilter, Calendar, X, User, Shield, LogOut, Heart } from 'lucide-react';
 import { cn, TMDB_API_KEY, TMDB_BASE_URL } from '../lib/utils';
 import { TVSeries } from '../types';
+import { useAuth } from '../context/AuthContext';
 
 export function Layout() {
   const [darkMode, setDarkMode] = React.useState(() => {
@@ -13,9 +14,10 @@ export function Layout() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [searchResults, setSearchResults] = React.useState<TVSeries[]>([]);
   const [isSearching, setIsSearching] = React.useState(false);
-  const searchDebounceRef = React.useRef<NodeJS.Timeout>();
+  const searchDebounceRef = React.useRef<ReturnType<typeof setTimeout>>();
   const searchResultsRef = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { isAuthenticated, isAdmin, user, logout } = useAuth();
 
   React.useEffect(() => {
     if (darkMode) {
@@ -73,7 +75,12 @@ export function Layout() {
   };
 
   const toggleDarkMode = () => {
-    setDarkMode(prevMode => !prevMode);
+    setDarkMode((prevMode: boolean) => !prevMode);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
   };
 
   return (
@@ -175,6 +182,62 @@ export function Layout() {
               >
                 {darkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
               </button>
+
+              {/* Auth Section */}
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to="/favorites"
+                    className="flex items-center px-4 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300"
+                    title="My Favorites"
+                  >
+                    <Heart className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">Favorites</span>
+                  </Link>
+
+                  <Link
+                    to="/profile"
+                    className="flex items-center px-4 py-2.5 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
+                    title={user?.name}
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">{user?.name}</span>
+                  </Link>
+
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      className="flex items-center px-4 py-2.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white transition-all duration-300"
+                    >
+                      <Shield className="w-4 h-4 mr-2" />
+                      <span className="hidden sm:inline">Admin</span>
+                    </Link>
+                  )}
+
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center px-4 py-2.5 rounded-full bg-gray-800 dark:bg-gray-700 hover:bg-gray-900 dark:hover:bg-gray-600 text-white transition-all duration-300"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">Logout</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="px-4 py-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="px-4 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Star, Calendar, PlayCircle, Tv } from 'lucide-react';
 import { TVSeries, Cast, Video } from '../types';
 import { TMDB_API_KEY, TMDB_BASE_URL, TMDB_IMAGE_BASE_URL, cn } from '../lib/utils';
+import { AddToFavoriteButton } from '../components/AddToFavoriteButton';
 
 export function SeriesDetails() {
   const { id } = useParams();
@@ -109,7 +110,7 @@ export function SeriesDetails() {
             </div>
           </div>
           <p className="text-lg max-w-3xl">{series.overview}</p>
-          <div className="flex items-center space-x-4 mt-6">
+          <div className="flex items-center flex-wrap gap-4 mt-6">
             <button 
               onClick={handleWatchTrailer}
               className={cn(
@@ -141,6 +142,17 @@ export function SeriesDetails() {
               <Tv className="w-5 h-5 mr-2" />
               Watch TV Show
             </button>
+
+            <AddToFavoriteButton
+              movieId={series.id.toString()}
+              movieTitle={series.name}
+              moviePoster={series.poster_path}
+              movieOverview={series.overview}
+              movieRating={series.vote_average}
+              movieReleaseDate={series.first_air_date}
+              movieType="tv"
+              variant="button"
+            />
           </div>
 
           {watchProviders?.flatrate && (
