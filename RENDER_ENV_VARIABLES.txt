@@ -1,0 +1,15 @@
+# Copy these environment variables to Render
+# Go to Render → Your Service → Environment → Add Environment Variable
+
+NODE_ENV=production
+PORT=5000
+MONGO_URI=mongodb+srv://serielatwebsite_db_user:5eBoWDN69mzZVwg7@serielat.ousddhz.mongodb.net/serielat?retryWrites=true&w=majority
+JWT_ACCESS_SECRET=your-super-secret-access-token-key-change-this-in-production-min-32-chars
+JWT_REFRESH_SECRET=your-super-secret-refresh-token-key-change-this-in-production-min-32-chars
+CLIENT_URL=https://your-vercel-app.vercel.app
+EMAIL_USER=serielat.website@gmail.com
+EMAIL_PASSWORD=jflk bkis fkjk rkhv
+FRONTEND_URL=https://your-vercel-app.vercel.app
+
+# IMPORTANT: Replace "your-vercel-app.vercel.app" with your actual Vercel URL
+# You can find it in Vercel dashboard
