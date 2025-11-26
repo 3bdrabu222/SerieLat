@@ -1,15 +1,7 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-// Create transporter
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD
-    }
-  });
-};
+// Create Resend instance
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Generate 4-digit verification code
 export const generateVerificationCode = () => {
@@ -19,10 +11,8 @@ export const generateVerificationCode = () => {
 // Send verification email
 export const sendVerificationEmail = async (email, code, name) => {
   try {
-    const transporter = createTransporter();
-
-    const mailOptions = {
-      from: `"SerieLat" <${process.env.EMAIL_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: 'SerieLat <serielat.website@gmail.com>',
       to: email,
       subject: 'Verify Your Email - SerieLat',
       html: `
@@ -104,11 +94,15 @@ export const sendVerificationEmail = async (email, code, name) => {
         </body>
         </html>
       `
-    };
+    });
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Verification email sent:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    if (error) {
+      console.error('❌ Resend error:', error);
+      throw new Error('Failed to send verification email');
+    }
+
+    console.log('✅ Verification email sent:', data.id);
+    return { success: true, messageId: data.id };
   } catch (error) {
     console.error('❌ Error sending verification email:', error);
     throw new Error('Failed to send verification email');
@@ -118,10 +112,8 @@ export const sendVerificationEmail = async (email, code, name) => {
 // Send welcome email after verification
 export const sendWelcomeEmail = async (email, name) => {
   try {
-    const transporter = createTransporter();
-
-    const mailOptions = {
-      from: `"SerieLat" <${process.env.EMAIL_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: 'SerieLat <serielat.website@gmail.com>',
       to: email,
       subject: 'Welcome to SerieLat! 🎉',
       html: `
@@ -186,10 +178,13 @@ export const sendWelcomeEmail = async (email, name) => {
         </body>
         </html>
       `
-    };
+    });
 
-    await transporter.sendMail(mailOptions);
-    console.log('✅ Welcome email sent to:', email);
+    if (error) {
+      console.error('❌ Resend error:', error);
+    } else {
+      console.log('✅ Welcome email sent to:', email);
+    }
   } catch (error) {
     console.error('❌ Error sending welcome email:', error);
     // Don't throw error, welcome email is not critical
