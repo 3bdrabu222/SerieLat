@@ -1,8 +1,9 @@
-import nodemailer from 'nodemailer';
+import pkg from 'nodemailer';
+const { createTransport } = pkg;
 
 // Create Brevo (SendinBlue) transporter
 const createTransporter = () => {
-  const transporter = nodemailer.createTransporter({
+  const transporter = createTransport({
     host: 'smtp-relay.brevo.com',
     port: 587,
     secure: false,
