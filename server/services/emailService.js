@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 
 // Create Brevo (SendinBlue) transporter
 const createTransporter = () => {
-  return nodemailer.createTransporter({
+  const transporter = nodemailer.createTransporter({
     host: 'smtp-relay.brevo.com',
     port: 587,
     secure: false,
@@ -11,6 +11,7 @@ const createTransporter = () => {
       pass: process.env.BREVO_SMTP_KEY
     }
   });
+  return transporter;
 };
 
 // Generate 4-digit verification code
