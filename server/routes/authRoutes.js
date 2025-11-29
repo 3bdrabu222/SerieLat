@@ -5,9 +5,7 @@ import {
   refreshToken,
   logout,
   forgotPassword,
-  resetPassword,
-  verifyEmail,
-  resendVerificationCode
+  resetPassword
 } from '../controllers/authController.js';
 
 const router = express.Router();
@@ -17,12 +15,6 @@ router.post('/register', register);
 
 // POST /auth/login
 router.post('/login', login);
-
-// POST /auth/verify-email
-router.post('/verify-email', verifyEmail);
-
-// POST /auth/resend-code
-router.post('/resend-code', resendVerificationCode);
 
 // POST /auth/refresh-token
 router.post('/refresh-token', refreshToken);

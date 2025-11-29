@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import { User } from '../models/User.js';
 import { RefreshToken } from '../models/RefreshToken.js';
 import { PasswordResetToken } from '../models/PasswordResetToken.js';
-import { generateVerificationCode, sendVerificationEmail, sendWelcomeEmail } from '../services/emailService.js';
+import { sendWelcomeEmail } from '../services/emailService.js';
 
 // Helper functions
 const createAccessToken = (user) =>
@@ -49,35 +49,25 @@ export const register = async (req, res) => {
     // Hash password
     const hashed = await bcrypt.hash(password, 10);
 
-    // Generate 4-digit verification code
-    const verificationCode = generateVerificationCode();
-    const hashedCode = await bcrypt.hash(verificationCode, 10);
-
     // Create user (only allow admin role if explicitly set and authorized)
     const user = await User.create({
       name,
       email,
       password: hashed,
       role: role === 'admin' ? 'admin' : 'user',
-      isVerified: false,
-      verificationCode: hashedCode,
-      verificationCodeExpires: new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+      isVerified: true // Auto-verify users upon registration
     });
 
-    // Send verification email
+    // Send welcome email
     try {
-      await sendVerificationEmail(email, verificationCode, name);
+      await sendWelcomeEmail(email, name);
     } catch (emailError) {
-      // If email fails, delete the user and return error
-      await User.findByIdAndDelete(user._id);
-      console.error('Email sending failed:', emailError);
-      return res.status(500).json({ 
-        message: 'Failed to send verification email. Please try again.' 
-      });
+      console.error('Welcome email failed:', emailError);
+      // Don't fail registration if welcome email fails
     }
 
     res.status(201).json({
-      message: 'Registration successful! Please check your email for the verification code.',
+      message: 'Registration successful! You can now log in.',
       email: user.email
     });
   } catch (err) {
@@ -105,15 +95,6 @@ export const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    // Check if email is verified
-    if (!user.isVerified) {
-      return res.status(403).json({ 
-        message: 'Email not verified. Please verify your email before logging in.',
-        email: user.email,
-        requiresVerification: true
-      });
     }
 
     // Generate tokens

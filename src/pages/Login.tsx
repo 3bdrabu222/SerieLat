@@ -37,17 +37,6 @@ export const Login = () => {
       console.error('Login error:', err);
       const errorData = err.response?.data;
       
-      // Check if user needs email verification
-      if (errorData?.requiresVerification) {
-        setError(errorData.message);
-        setLoading(false);
-        // Redirect to verification page after 2 seconds
-        setTimeout(() => {
-          navigate(`/verify-email?email=${encodeURIComponent(errorData.email)}`, { replace: true });
-        }, 2000);
-        return;
-      }
-      
       const errorMessage = errorData?.message || 'Invalid email or password. Please try again.';
       setError(errorMessage);
       setLoading(false);

@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { FavoritesProvider } from './context/FavoritesContext';
@@ -15,7 +14,6 @@ import { Years } from './pages/Years';
 import { YearShows } from './pages/YearShows';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
-import { VerifyEmail } from './pages/VerifyEmail';
 import { Profile } from './pages/Profile';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { Favorites } from './pages/Favorites';
@@ -39,7 +37,6 @@ function App() {
               {/* Auth Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/verify-email" element={<VerifyEmail />} />
               
               {/* Protected Routes */}
               <Route

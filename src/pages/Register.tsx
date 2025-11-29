@@ -48,9 +48,9 @@ export const Register = () => {
         password
       });
       
-      // Registration successful - redirect to verification page
+      // Registration successful - redirect to login page
       setLoading(false);
-      navigate(`/verify-email?email=${encodeURIComponent(email)}`, { replace: true });
+      navigate('/login', { replace: true });
     } catch (err: any) {
       // Display error and keep user on register page
       console.error('Registration error:', err);
