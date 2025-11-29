@@ -4,7 +4,6 @@ import crypto from 'crypto';
 import { User } from '../models/User.js';
 import { RefreshToken } from '../models/RefreshToken.js';
 import { PasswordResetToken } from '../models/PasswordResetToken.js';
-import { sendWelcomeEmail } from '../services/emailService.js';
 
 // Helper functions
 const createAccessToken = (user) =>
@@ -57,14 +56,6 @@ export const register = async (req, res) => {
       role: role === 'admin' ? 'admin' : 'user',
       isVerified: true // Auto-verify users upon registration
     });
-
-    // Send welcome email
-    try {
-      await sendWelcomeEmail(email, name);
-    } catch (emailError) {
-      console.error('Welcome email failed:', emailError);
-      // Don't fail registration if welcome email fails
-    }
 
     res.status(201).json({
       message: 'Registration successful! You can now log in.',
@@ -331,14 +322,6 @@ export const verifyEmail = async (req, res) => {
     user.verificationCode = undefined;
     user.verificationCodeExpires = undefined;
     await user.save();
-
-    // Send welcome email
-    try {
-      await sendWelcomeEmail(user.email, user.name);
-    } catch (emailError) {
-      console.error('Welcome email failed:', emailError);
-      // Don't fail the verification if welcome email fails
-    }
 
     res.json({ 
       message: 'Email verified successfully! You can now log in.',

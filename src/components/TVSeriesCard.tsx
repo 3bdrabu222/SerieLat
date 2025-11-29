@@ -1,9 +1,9 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { TVSeries } from '../types';
 import { TMDB_IMAGE_BASE_URL } from '../lib/utils';
 import { AddToFavoriteButton } from './AddToFavoriteButton';
+import { AddToWatchLaterButton } from './AddToWatchLaterButton';
 
 interface TVSeriesCardProps {
   series: TVSeries;
@@ -26,8 +26,8 @@ export function TVSeriesCard({ series }: TVSeriesCardProps) {
           loading="lazy"
         />
         
-        {/* Favorite Button */}
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+        {/* Action Buttons */}
+        <div className="absolute top-2 left-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
           <AddToFavoriteButton
             movieId={series.id.toString()}
             movieTitle={series.name}
@@ -36,6 +36,16 @@ export function TVSeriesCard({ series }: TVSeriesCardProps) {
             movieRating={series.vote_average}
             movieReleaseDate={series.first_air_date}
             movieType="tv"
+            variant="icon"
+          />
+          <AddToWatchLaterButton
+            itemId={series.id.toString()}
+            title={series.name}
+            poster={series.poster_path}
+            mediaType="tv"
+            overview={series.overview}
+            rating={series.vote_average}
+            releaseDate={series.first_air_date}
             variant="icon"
           />
         </div>

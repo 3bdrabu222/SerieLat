@@ -1,42 +1,42 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Loader2, Star, Calendar, Tv, Play, ExternalLink } from 'lucide-react';
-import { TVSeries, Cast } from '../types';
+import { Loader2, Star, Calendar, Clock, DollarSign, Play, ExternalLink } from 'lucide-react';
+import { MovieDetails as MovieDetailsType, Cast, Movie } from '../types';
 import { TMDB_API_KEY, TMDB_BASE_URL, TMDB_IMAGE_BASE_URL } from '../lib/utils';
 import { AddToFavoriteButton } from '../components/AddToFavoriteButton';
 import { AddToWatchLaterButton } from '../components/AddToWatchLaterButton';
-import { TVSeriesCard } from '../components/TVSeriesCard';
+import { MovieCard } from '../components/MovieCard';
 
-export function SeriesDetails() {
+export function MovieDetails() {
   const { id } = useParams<{ id: string }>();
-  const [series, setSeries] = useState<TVSeries | null>(null);
+  const [movie, setMovie] = useState<MovieDetailsType | null>(null);
   const [cast, setCast] = useState<Cast[]>([]);
-  const [recommendations, setRecommendations] = useState<TVSeries[]>([]);
+  const [recommendations, setRecommendations] = useState<Movie[]>([]);
   const [trailer, setTrailer] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchSeriesData() {
+    async function fetchMovieData() {
       if (!id) return;
 
       try {
         setLoading(true);
 
-        const [seriesRes, creditsRes, videosRes, recommendationsRes] = await Promise.all([
-          fetch(`${TMDB_BASE_URL}/tv/${id}?api_key=${TMDB_API_KEY}&language=en-US`),
-          fetch(`${TMDB_BASE_URL}/tv/${id}/credits?api_key=${TMDB_API_KEY}`),
-          fetch(`${TMDB_BASE_URL}/tv/${id}/videos?api_key=${TMDB_API_KEY}&language=en-US`),
-          fetch(`${TMDB_BASE_URL}/tv/${id}/recommendations?api_key=${TMDB_API_KEY}&language=en-US&page=1`)
+        const [movieRes, creditsRes, videosRes, recommendationsRes] = await Promise.all([
+          fetch(`${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}&language=en-US`),
+          fetch(`${TMDB_BASE_URL}/movie/${id}/credits?api_key=${TMDB_API_KEY}`),
+          fetch(`${TMDB_BASE_URL}/movie/${id}/videos?api_key=${TMDB_API_KEY}&language=en-US`),
+          fetch(`${TMDB_BASE_URL}/movie/${id}/recommendations?api_key=${TMDB_API_KEY}&language=en-US&page=1`)
         ]);
 
-        const [seriesData, creditsData, videosData, recommendationsData] = await Promise.all([
-          seriesRes.json(),
+        const [movieData, creditsData, videosData, recommendationsData] = await Promise.all([
+          movieRes.json(),
           creditsRes.json(),
           videosRes.json(),
           recommendationsRes.json()
         ]);
 
-        setSeries(seriesData);
+        setMovie(movieData);
         setCast(creditsData.cast.slice(0, 10));
         setRecommendations(recommendationsData.results.slice(0, 12));
 
@@ -47,13 +47,13 @@ export function SeriesDetails() {
           setTrailer(trailerVideo.key);
         }
       } catch (error) {
-        console.error('Error fetching series details:', error);
+        console.error('Error fetching movie details:', error);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchSeriesData();
+    fetchMovieData();
   }, [id]);
 
   if (loading) {
@@ -64,17 +64,16 @@ export function SeriesDetails() {
     );
   }
 
-  if (!series) {
+  if (!movie) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Series not found</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Movie not found</h2>
       </div>
     );
   }
 
-  const releaseYear = series.first_air_date?.split('-')[0] || 'N/A';
-  const numberOfSeasons = series.number_of_seasons || 0;
-  const numberOfEpisodes = series.number_of_episodes || 0;
+  const releaseYear = movie.release_date?.split('-')[0] || 'N/A';
+  const runtime = movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m` : 'N/A';
 
   return (
     <div className="space-y-8">
@@ -82,10 +81,10 @@ export function SeriesDetails() {
       <div 
         className="relative -mx-4 sm:-mx-0 h-[500px] bg-cover bg-center rounded-none sm:rounded-2xl overflow-hidden"
         style={{
-          backgroundImage: series.backdrop_path
-            ? `url(${TMDB_IMAGE_BASE_URL}/original${series.backdrop_path})`
+          backgroundImage: movie.backdrop_path
+            ? `url(${TMDB_IMAGE_BASE_URL}/original${movie.backdrop_path})`
             : 'none',
-          backgroundColor: !series.backdrop_path ? '#1f2937' : undefined
+          backgroundColor: !movie.backdrop_path ? '#1f2937' : undefined
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
@@ -94,35 +93,39 @@ export function SeriesDetails() {
           <div className="flex flex-col md:flex-row gap-6 w-full">
             {/* Poster */}
             <img
-              src={series.poster_path
-                ? `${TMDB_IMAGE_BASE_URL}/w500${series.poster_path}`
+              src={movie.poster_path
+                ? `${TMDB_IMAGE_BASE_URL}/w500${movie.poster_path}`
                 : 'https://via.placeholder.com/300x450.png?text=No+Image'
               }
-              alt={series.name}
+              alt={movie.title}
               className="w-48 h-72 object-cover rounded-lg shadow-2xl hidden md:block"
             />
             
             {/* Info */}
             <div className="flex-1 text-white space-y-4">
-              <h1 className="text-4xl md:text-5xl font-bold">{series.name}</h1>
+              <h1 className="text-4xl md:text-5xl font-bold">{movie.title}</h1>
+              
+              {movie.tagline && (
+                <p className="text-xl italic text-gray-300">{movie.tagline}</p>
+              )}
               
               <div className="flex flex-wrap items-center gap-4 text-sm">
                 <div className="flex items-center gap-1">
                   <Star className="w-5 h-5 text-yellow-400 fill-current" />
-                  <span className="font-semibold">{series.vote_average.toFixed(1)}</span>
+                  <span className="font-semibold">{movie.vote_average.toFixed(1)}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="w-5 h-5" />
                   <span>{releaseYear}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Tv className="w-5 h-5" />
-                  <span>{numberOfSeasons} {numberOfSeasons === 1 ? 'Season' : 'Seasons'}</span>
+                  <Clock className="w-5 h-5" />
+                  <span>{runtime}</span>
                 </div>
               </div>
               
               <div className="flex flex-wrap gap-2">
-                {series.genres.map((genre: any) => (
+                {movie.genres.map((genre) => (
                   <span
                     key={genre.id}
                     className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm"
@@ -146,33 +149,33 @@ export function SeriesDetails() {
                 )}
                 
                 <a
-                  href={`https://www.themoviedb.org/tv/${series.id}`}
+                  href={`https://www.themoviedb.org/movie/${movie.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
                 >
                   <ExternalLink size={20} />
-                  <span>Watch TV Show</span>
+                  <span>Watch Movie</span>
                 </a>
                 
                 <AddToFavoriteButton
-                  movieId={series.id.toString()}
-                  movieTitle={series.name}
-                  moviePoster={series.poster_path}
-                  movieOverview={series.overview}
-                  movieRating={series.vote_average}
-                  movieReleaseDate={series.first_air_date}
-                  movieType="tv"
+                  movieId={movie.id.toString()}
+                  movieTitle={movie.title}
+                  moviePoster={movie.poster_path}
+                  movieOverview={movie.overview}
+                  movieRating={movie.vote_average}
+                  movieReleaseDate={movie.release_date}
+                  movieType="movie"
                 />
                 
                 <AddToWatchLaterButton
-                  itemId={series.id.toString()}
-                  title={series.name}
-                  poster={series.poster_path}
-                  mediaType="tv"
-                  overview={series.overview}
-                  rating={series.vote_average}
-                  releaseDate={series.first_air_date}
+                  itemId={movie.id.toString()}
+                  title={movie.title}
+                  poster={movie.poster_path}
+                  mediaType="movie"
+                  overview={movie.overview}
+                  rating={movie.vote_average}
+                  releaseDate={movie.release_date}
                 />
               </div>
             </div>
@@ -183,25 +186,29 @@ export function SeriesDetails() {
       {/* Overview */}
       <section className="space-y-4">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Overview</h2>
-        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{series.overview}</p>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{movie.overview}</p>
       </section>
 
       {/* Additional Info */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md">
           <div className="flex items-center gap-2 mb-2">
-            <Tv className="w-5 h-5 text-blue-600 dark:text-blue-500" />
-            <h3 className="font-semibold text-gray-900 dark:text-white">Seasons</h3>
+            <DollarSign className="w-5 h-5 text-green-600 dark:text-green-500" />
+            <h3 className="font-semibold text-gray-900 dark:text-white">Budget</h3>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{numberOfSeasons}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            {movie.budget > 0 ? `$${(movie.budget / 1000000).toFixed(1)}M` : 'N/A'}
+          </p>
         </div>
         
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md">
           <div className="flex items-center gap-2 mb-2">
-            <Play className="w-5 h-5 text-green-600 dark:text-green-500" />
-            <h3 className="font-semibold text-gray-900 dark:text-white">Episodes</h3>
+            <DollarSign className="w-5 h-5 text-blue-600 dark:text-blue-500" />
+            <h3 className="font-semibold text-gray-900 dark:text-white">Revenue</h3>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{numberOfEpisodes}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            {movie.revenue > 0 ? `$${(movie.revenue / 1000000).toFixed(1)}M` : 'N/A'}
+          </p>
         </div>
         
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md">
@@ -209,7 +216,7 @@ export function SeriesDetails() {
             <Star className="w-5 h-5 text-yellow-500 fill-current" />
             <h3 className="font-semibold text-gray-900 dark:text-white">Status</h3>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{series.status || 'N/A'}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{movie.status}</p>
         </div>
       </section>
 
@@ -254,8 +261,8 @@ export function SeriesDetails() {
         <section className="space-y-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">You May Also Like</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
-            {recommendations.map((show) => (
-              <TVSeriesCard key={show.id} series={show} />
+            {recommendations.map((movie) => (
+              <MovieCard key={movie.id} movie={movie} />
             ))}
           </div>
         </section>

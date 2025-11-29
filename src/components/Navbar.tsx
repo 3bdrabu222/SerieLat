@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, User, Shield } from 'lucide-react';
+import { LogOut, User, Shield, Heart, Clock } from 'lucide-react';
 
 export const Navbar = () => {
   const { isAuthenticated, isAdmin, user, logout } = useAuth();
@@ -22,6 +22,22 @@ export const Navbar = () => {
           <div className="flex items-center gap-6">
             {isAuthenticated ? (
               <>
+                <Link
+                  to="/favorites"
+                  className="flex items-center gap-2 hover:text-red-400 transition"
+                  title="Favorites"
+                >
+                  <Heart size={20} />
+                </Link>
+
+                <Link
+                  to="/watch-later"
+                  className="flex items-center gap-2 hover:text-blue-400 transition"
+                  title="Watch Later"
+                >
+                  <Clock size={20} />
+                </Link>
+
                 <Link
                   to="/profile"
                   className="flex items-center gap-2 hover:text-blue-400 transition"

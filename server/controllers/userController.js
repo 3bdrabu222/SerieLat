@@ -1,4 +1,7 @@
 import { User } from '../models/User.js';
+import { Favorite } from '../models/Favorite.js';
+import { WatchLater } from '../models/WatchLater.js';
+import { RefreshToken } from '../models/RefreshToken.js';
 
 // Get user profile (authenticated users)
 export const getProfile = async (req, res) => {
@@ -90,6 +93,13 @@ export const deleteUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+    // Delete all user-related data
+    await Promise.all([
+      Favorite.deleteMany({ user: id }),
+      WatchLater.deleteMany({ user: id }),
+      RefreshToken.deleteMany({ user: id })
+    ]);
 
     res.json({ message: 'User deleted successfully' });
   } catch (err) {

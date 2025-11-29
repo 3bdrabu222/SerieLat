@@ -6,6 +6,7 @@ import { connectDB } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import favoritesRoutes from './routes/favoritesRoutes.js';
+import watchLaterRoutes from './routes/watchLaterRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -29,6 +30,7 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/favorites', favoritesRoutes);
+app.use('/api/watchlater', watchLaterRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

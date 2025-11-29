@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { TVSeries } from '../types';
 import { TMDB_IMAGE_BASE_URL, cn } from '../lib/utils';
 import { AddToFavoriteButton } from './AddToFavoriteButton';
+import { AddToWatchLaterButton } from './AddToWatchLaterButton';
 
 interface SeriesCardProps {
   series: TVSeries;
@@ -69,13 +70,13 @@ export function SeriesCard({ series, isHovered = false }: SeriesCardProps) {
           />
           
           {/* Rating Badge */}
-          <div className="absolute top-2 right-2 flex items-center space-x-1 bg-black/70 text-yellow-400 px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+          <div className="absolute top-2 right-2 flex items-center space-x-1 bg-black/70 text-yellow-400 px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm z-10">
             <Star className="w-3 h-3" />
             <span>{series.vote_average?.toFixed(1)}</span>
           </div>
           
-          {/* Favorite Button */}
-          <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {/* Action Buttons */}
+          <div className="absolute top-2 left-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
             <AddToFavoriteButton
               movieId={series.id.toString()}
               movieTitle={series.name}
@@ -84,6 +85,16 @@ export function SeriesCard({ series, isHovered = false }: SeriesCardProps) {
               movieRating={series.vote_average}
               movieReleaseDate={series.first_air_date}
               movieType="tv"
+              variant="icon"
+            />
+            <AddToWatchLaterButton
+              itemId={series.id.toString()}
+              title={series.name}
+              poster={series.poster_path}
+              mediaType="tv"
+              overview={series.overview}
+              rating={series.vote_average}
+              releaseDate={series.first_air_date}
               variant="icon"
             />
           </div>
@@ -117,14 +128,14 @@ export function SeriesCard({ series, isHovered = false }: SeriesCardProps) {
           
           {/* Hover Content */}
           <motion.div 
-            className="absolute inset-0 p-3 flex flex-col justify-end"
+            className="absolute inset-0 p-3 flex flex-col justify-end pointer-events-none"
             variants={{
               rest: { opacity: 0 },
               hover: { opacity: 1 }
             }}
           >
             <motion.div
-              className="bg-black/80 p-3 rounded-lg backdrop-blur-sm -mb-2 transform origin-bottom"
+              className="bg-black/80 p-3 rounded-lg backdrop-blur-sm -mb-2 transform origin-bottom pointer-events-auto"
               variants={{
                 rest: { opacity: 0, y: 20, scale: 0.9 },
                 hover: { opacity: 1, y: 0, scale: 1 }
