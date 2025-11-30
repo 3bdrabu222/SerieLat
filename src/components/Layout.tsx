@@ -1,11 +1,20 @@
 import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { Tv, Search, Moon, Sun, ListFilter, Calendar, X, User, Shield, LogOut, Heart, Clock, Trophy, Film, Menu } from 'lucide-react';
+import { Tv, Search, Moon, Sun, ListFilter, Calendar, X, User, Shield, LogOut, Heart, Clock, Trophy, Film, Menu, Users } from 'lucide-react';
 import { cn, TMDB_API_KEY, TMDB_BASE_URL } from '../lib/utils';
 import { TVSeries, Movie } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { ChatBot } from './ChatBot';
 
-type SearchResult = (TVSeries | Movie) & { media_type: 'tv' | 'movie' };
+interface PersonResult {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  known_for_department: string;
+  media_type: 'person';
+}
+
+type SearchResult = (TVSeries | Movie | PersonResult) & { media_type: 'tv' | 'movie' | 'person' };
 
 export function Layout() {
   const [darkMode, setDarkMode] = React.useState(() => {
@@ -93,27 +102,31 @@ export function Layout() {
 
     searchDebounceRef.current = setTimeout(async () => {
       try {
-        // Search both TV shows and movies
-        const [tvResponse, movieResponse] = await Promise.all([
+        // Search TV shows, movies, and people
+        const [tvResponse, movieResponse, peopleResponse] = await Promise.all([
           fetch(`${TMDB_BASE_URL}/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(value)}&page=1`),
-          fetch(`${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(value)}&page=1`)
+          fetch(`${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(value)}&page=1&include_adult=false`),
+          fetch(`${TMDB_BASE_URL}/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(value)}&page=1&include_adult=false`)
         ]);
 
-        const [tvData, movieData] = await Promise.all([
+        const [tvData, movieData, peopleData] = await Promise.all([
           tvResponse.json(),
-          movieResponse.json()
+          movieResponse.json(),
+          peopleResponse.json()
         ]);
 
         // Combine and mark results with media type
-        const tvResults = tvData.results.slice(0, 3).map((item: any) => ({ ...item, media_type: 'tv' as const }));
-        const movieResults = movieData.results.slice(0, 3).map((item: any) => ({ ...item, media_type: 'movie' as const }));
+        const tvResults = tvData.results.slice(0, 2).map((item: any) => ({ ...item, media_type: 'tv' as const }));
+        const movieResults = movieData.results.slice(0, 2).map((item: any) => ({ ...item, media_type: 'movie' as const }));
+        const peopleResults = peopleData.results.slice(0, 2).map((item: any) => ({ ...item, media_type: 'person' as const }));
         
         // Interleave results for better UX
         const combined: SearchResult[] = [];
-        const maxLength = Math.max(tvResults.length, movieResults.length);
+        const maxLength = Math.max(tvResults.length, movieResults.length, peopleResults.length);
         for (let i = 0; i < maxLength; i++) {
-          if (tvResults[i]) combined.push(tvResults[i]);
           if (movieResults[i]) combined.push(movieResults[i]);
+          if (tvResults[i]) combined.push(tvResults[i]);
+          if (peopleResults[i]) combined.push(peopleResults[i]);
         }
         
         setSearchResults(combined.slice(0, 6));
@@ -202,10 +215,14 @@ export function Layout() {
                       className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden z-50 border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-xl"
                     >
                       {searchResults.map((result) => {
+                        const isPerson = result.media_type === 'person';
                         const isMovie = result.media_type === 'movie';
-                        const title = isMovie ? (result as any).title : (result as any).name;
-                        const releaseDate = isMovie ? (result as any).release_date : (result as any).first_air_date;
-                        const linkTo = isMovie ? `/movie/${result.id}` : `/series/${result.id}`;
+                        const title = isPerson ? (result as any).name : (isMovie ? (result as any).title : (result as any).name);
+                        const subtitle = isPerson 
+                          ? (result as any).known_for_department 
+                          : (isMovie ? (result as any).release_date : (result as any).first_air_date)?.split('-')[0] || 'N/A';
+                        const imagePath = isPerson ? (result as any).profile_path : (result as any).poster_path;
+                        const linkTo = isPerson ? `/person/${result.id}` : (isMovie ? `/movie/${result.id}` : `/series/${result.id}`);
                         
                         return (
                           <Link
@@ -218,30 +235,32 @@ export function Layout() {
                               setSearchExpanded(false);
                             }}
                           >
-                            {(result as any).poster_path ? (
+                            {imagePath ? (
                               <img
-                                src={`https://image.tmdb.org/t/p/w92${(result as any).poster_path}`}
+                                src={`https://image.tmdb.org/t/p/w92${imagePath}`}
                                 alt={title}
-                                className="w-10 h-15 object-cover rounded"
+                                className={`w-10 object-cover rounded ${isPerson ? 'h-10 rounded-full' : 'h-15'}`}
                               />
                             ) : (
-                              <div className="w-10 h-15 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
-                                {isMovie ? <Film className="w-5 h-5 text-gray-400" /> : <Tv className="w-5 h-5 text-gray-400" />}
+                              <div className={`w-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center ${isPerson ? 'h-10 rounded-full' : 'h-15'}`}>
+                                {isPerson ? <User className="w-5 h-5 text-gray-400" /> : (isMovie ? <Film className="w-5 h-5 text-gray-400" /> : <Tv className="w-5 h-5 text-gray-400" />)}
                               </div>
                             )}
                             <div className="ml-3 flex-1">
                               <div className="flex items-center gap-2">
                                 <h4 className="font-medium text-gray-900 dark:text-white text-sm line-clamp-1">{title}</h4>
                                 <span className={`px-1.5 py-0.5 rounded text-xs font-medium flex-shrink-0 ${
-                                  isMovie 
-                                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
-                                    : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+                                  isPerson
+                                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                                    : (isMovie 
+                                      ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
+                                      : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300')
                                 }`}>
-                                  {isMovie ? 'Movie' : 'TV'}
+                                  {isPerson ? 'Person' : (isMovie ? 'Movie' : 'TV')}
                                 </span>
                               </div>
                               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                {releaseDate?.split('-')[0] || 'N/A'}
+                                {subtitle}
                               </p>
                             </div>
                           </Link>
@@ -253,52 +272,38 @@ export function Layout() {
               </div>
 
               <div className="flex items-center gap-2">
-                {/* Browse Section */}
-                <div className="hidden lg:flex items-center gap-2">
+                {/* Main Navigation - 3 Clean Buttons */}
+                <div className="flex items-center gap-2">
+                  <Link
+                    to="/best-100"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-yellow-500 via-orange-500 to-red-500 hover:from-yellow-400 hover:via-orange-400 hover:to-red-400 text-white transition-all duration-300 text-sm font-semibold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/50 hover:scale-105"
+                  >
+                    <Trophy className="w-4 h-4" />
+                    <span className="hidden lg:inline">Best 100</span>
+                  </Link>
+
                   <Link
                     to="/genres"
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 hover:from-gray-200 hover:to-gray-100 dark:hover:from-gray-700 dark:hover:to-gray-700/50 transition-all duration-300 text-gray-700 dark:text-gray-300 text-xs font-medium shadow-sm hover:shadow-md"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-400 hover:via-purple-400 hover:to-pink-400 text-white transition-all duration-300 text-sm font-semibold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/50 hover:scale-105"
                   >
-                    <ListFilter className="w-3.5 h-3.5" />
-                    <span>Genres</span>
+                    <ListFilter className="w-4 h-4" />
+                    <span className="hidden lg:inline">Genres</span>
                   </Link>
 
                   <Link
                     to="/years"
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 hover:from-gray-200 hover:to-gray-100 dark:hover:from-gray-700 dark:hover:to-gray-700/50 transition-all duration-300 text-gray-700 dark:text-gray-300 text-xs font-medium shadow-sm hover:shadow-md"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 hover:from-blue-400 hover:via-cyan-400 hover:to-teal-400 text-white transition-all duration-300 text-sm font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/50 hover:scale-105"
                   >
-                    <Calendar className="w-3.5 h-3.5" />
-                    <span>Years</span>
-                  </Link>
-                </div>
-
-                {/* Separator */}
-                <div className="hidden lg:block w-px h-6 bg-gradient-to-b from-transparent via-gray-300 to-transparent dark:via-gray-700"></div>
-
-                {/* Media Type Section */}
-                <div className="flex items-center gap-2">
-                  <Link
-                    to="/discover/tv"
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white transition-all duration-300 text-xs font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-105"
-                  >
-                    <Tv className="w-3.5 h-3.5" />
-                    <span className="hidden lg:inline">TV</span>
+                    <Calendar className="w-4 h-4" />
+                    <span className="hidden lg:inline">Years</span>
                   </Link>
 
                   <Link
-                    to="/discover/movies"
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-br from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white transition-all duration-300 text-xs font-semibold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105"
+                    to="/popular-people"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white transition-all duration-300 text-sm font-semibold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/50 hover:scale-105"
                   >
-                    <Film className="w-3.5 h-3.5" />
-                    <span className="hidden lg:inline">Movies</span>
-                  </Link>
-
-                  <Link
-                    to="/best-100"
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-br from-yellow-500 via-orange-500 to-orange-600 hover:from-yellow-400 hover:via-orange-400 hover:to-orange-500 text-white transition-all duration-300 text-xs font-semibold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-105"
-                  >
-                    <Trophy className="w-3.5 h-3.5" />
-                    <span className="hidden lg:inline">Top</span>
+                    <Users className="w-4 h-4" />
+                    <span className="hidden lg:inline">People</span>
                   </Link>
                 </div>
               
@@ -496,48 +501,39 @@ export function Layout() {
               {/* Mobile Navigation Links */}
               <div className="space-y-1 px-2">
                 <Link
-                  to="/genres"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                >
-                  <ListFilter className="w-4 h-4" />
-                  <span className="text-sm">Genres</span>
-                </Link>
-
-                <Link
-                  to="/years"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                >
-                  <Calendar className="w-4 h-4" />
-                  <span className="text-sm">Years</span>
-                </Link>
-
-                <Link
-                  to="/discover/tv"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
-                >
-                  <Tv className="w-4 h-4" />
-                  <span className="text-sm font-medium">TV Shows</span>
-                </Link>
-
-                <Link
-                  to="/discover/movies"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition-colors"
-                >
-                  <Film className="w-4 h-4" />
-                  <span className="text-sm font-medium">Movies</span>
-                </Link>
-
-                <Link
                   to="/best-100"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 text-white transition-colors"
                 >
                   <Trophy className="w-4 h-4" />
                   <span className="text-sm font-medium">Best 100</span>
+                </Link>
+
+                <Link
+                  to="/genres"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white transition-colors"
+                >
+                  <ListFilter className="w-4 h-4" />
+                  <span className="text-sm font-medium">Genres</span>
+                </Link>
+
+                <Link
+                  to="/years"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white transition-colors"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span className="text-sm font-medium">Years</span>
+                </Link>
+
+                <Link
+                  to="/popular-people"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 text-white transition-colors"
+                >
+                  <Users className="w-4 h-4" />
+                  <span className="text-sm font-medium">People</span>
                 </Link>
 
                 {isAuthenticated && (
@@ -639,6 +635,9 @@ export function Layout() {
           </div>
         </div>
       </footer>
+
+      {/* AI Chatbot */}
+      <ChatBot />
     </div>
   );
 }
