@@ -2,6 +2,7 @@ import { User } from '../models/User.js';
 import { Favorite } from '../models/Favorite.js';
 import { WatchLater } from '../models/WatchLater.js';
 import { RefreshToken } from '../models/RefreshToken.js';
+import bcrypt from 'bcryptjs';
 
 // Get user profile (authenticated users)
 export const getProfile = async (req, res) => {
@@ -104,6 +105,72 @@ export const deleteUser = async (req, res) => {
     res.json({ message: 'User deleted successfully' });
   } catch (err) {
     console.error('Delete user error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Change password
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Current password and new password are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'New password must be at least 6 characters' });
+    }
+
+    // Get user with password
+    const user = await User.findById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    
+    await user.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (err) {
+    console.error('Change password error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Delete own account
+export const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Delete user
+    const user = await User.findByIdAndDelete(userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Delete all user-related data
+    await Promise.all([
+      Favorite.deleteMany({ user: userId }),
+      WatchLater.deleteMany({ user: userId }),
+      RefreshToken.deleteMany({ user: userId })
+    ]);
+
+    res.json({ message: 'Account deleted successfully' });
+  } catch (err) {
+    console.error('Delete account error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };

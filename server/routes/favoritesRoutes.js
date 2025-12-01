@@ -4,7 +4,11 @@ import {
   addToFavorites,
   removeFromFavorites,
   getUserFavorites,
-  checkFavorite
+  checkFavorite,
+  addPersonToFavorites,
+  removePersonFromFavorites,
+  checkPersonFavorite,
+  getFavoritePeople
 } from '../controllers/favoritesController.js';
 
 const router = express.Router();
@@ -23,5 +27,18 @@ router.get('/', getUserFavorites);
 
 // GET /favorites/check/:movieId - Check if movie is in favorites
 router.get('/check/:movieId', checkFavorite);
+
+// ==================== PEOPLE FAVORITES ====================
+// POST /favorites/people/add - Add person to favorites
+router.post('/people/add', addPersonToFavorites);
+
+// DELETE /favorites/people/remove/:personId - Remove person from favorites
+router.delete('/people/remove/:personId', removePersonFromFavorites);
+
+// GET /favorites/people/check/:personId - Check if person is in favorites
+router.get('/people/check/:personId', checkPersonFavorite);
+
+// GET /favorites/people - Get all favorite people
+router.get('/people', getFavoritePeople);
 
 export default router;

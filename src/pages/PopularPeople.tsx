@@ -16,11 +16,21 @@ const PopularPeople: React.FC = () => {
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  
+  // Initialize page from sessionStorage or default to 1
+  const [page, setPage] = useState(() => {
+    const savedPage = sessionStorage.getItem('popularPeoplePage');
+    return savedPage ? parseInt(savedPage, 10) : 1;
+  });
 
   useEffect(() => {
     fetchPopularPeople(page);
+  }, [page]);
+
+  // Save page to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem('popularPeoplePage', page.toString());
   }, [page]);
 
   const fetchPopularPeople = async (pageNum: number) => {

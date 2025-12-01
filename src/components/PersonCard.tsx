@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { User, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { FavoritePersonButton } from './FavoritePersonButton';
 
 interface PersonCardProps {
   person: {
@@ -51,6 +52,20 @@ const PersonCard: React.FC<PersonCardProps> = ({ person }) => {
           <div className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold shadow-lg backdrop-blur-sm">
             <TrendingUp className="w-3.5 h-3.5" />
             <span>{person.popularity.toFixed(1)}</span>
+          </div>
+
+          {/* Favorite Button */}
+          <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+            <FavoritePersonButton
+              person={{
+                id: person.id.toString(),
+                name: person.name,
+                profile_path: person.profile_path,
+                known_for_department: person.known_for_department,
+                popularity: person.popularity
+              }}
+              variant="icon"
+            />
           </div>
         </div>
 

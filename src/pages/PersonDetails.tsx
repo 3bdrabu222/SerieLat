@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { User, MapPin, Calendar, Briefcase, Star, Film, Tv, Loader2, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TMDB_API_KEY, TMDB_BASE_URL } from '../lib/utils';
+import { FavoritePersonButton } from '../components/FavoritePersonButton';
 
 interface PersonDetails {
   id: number;
@@ -217,6 +218,20 @@ const PersonDetails: React.FC = () => {
                 </div>
                 <p className="text-white font-semibold">{person.popularity.toFixed(1)}</p>
               </div>
+            </div>
+
+            {/* Add to Favorites Button */}
+            <div className="flex justify-center lg:justify-start">
+              <FavoritePersonButton
+                person={{
+                  id: person.id.toString(),
+                  name: person.name,
+                  profile_path: person.profile_path,
+                  known_for_department: person.known_for_department,
+                  popularity: person.popularity
+                }}
+                variant="button"
+              />
             </div>
 
             {/* Biography */}

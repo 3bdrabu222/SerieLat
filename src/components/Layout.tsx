@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { Tv, Search, Moon, Sun, ListFilter, Calendar, X, User, Shield, LogOut, Heart, Clock, Trophy, Film, Menu, Users } from 'lucide-react';
+import { Tv, Search, Moon, Sun, ListFilter, Calendar, X, User, Shield, LogOut, Heart, Clock, Trophy, Film, Menu, Users, Settings, Mail, Phone, MapPin } from 'lucide-react';
 import { cn, TMDB_API_KEY, TMDB_BASE_URL } from '../lib/utils';
 import { TVSeries, Movie } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -150,17 +150,22 @@ export function Layout() {
       "min-h-screen bg-gray-50 text-gray-900 flex flex-col",
       "dark:bg-gray-900 dark:text-gray-100"
     )}>
-      <header className="sticky top-0 z-50 border-b border-gray-200/50 dark:border-gray-700/50 bg-white/90 backdrop-blur-xl dark:bg-gray-900/90 shadow-sm transition-all duration-300">
+      <header className="sticky top-0 z-50 border-b border-gray-200/80 dark:border-gray-700/80 bg-white/95 backdrop-blur-2xl dark:bg-gray-900/95 shadow-lg shadow-gray-200/50 dark:shadow-gray-900/50 transition-all duration-300">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Main Header Row */}
-          <div className="flex items-center justify-between h-16 md:h-20">
+          <div className="flex items-center justify-between h-16 md:h-20 lg:h-24">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group flex-shrink-0">
+            <Link to="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
               <div className="relative">
-                <div className="absolute inset-0 bg-red-600/20 blur-xl group-hover:bg-red-600/30 transition-all duration-300 rounded-full"></div>
-                <Tv className="relative w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 text-red-600 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
+                <div className="absolute inset-0 bg-gradient-to-r from-red-600/30 to-pink-600/30 blur-xl sm:blur-2xl group-hover:from-red-600/40 group-hover:to-pink-600/40 transition-all duration-500 rounded-full scale-150"></div>
+                <div className="relative p-1.5 sm:p-2 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-600 to-pink-600 group-hover:from-red-500 group-hover:to-pink-500 shadow-lg shadow-red-500/30 group-hover:shadow-xl group-hover:shadow-red-500/50 transition-all duration-300">
+                  <Tv className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white transition-all duration-300 group-hover:scale-110 group-hover:rotate-6" />
+                </div>
               </div>
-              <span className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent group-hover:from-red-500 group-hover:to-red-400 transition-all duration-300">SerieLat</span>
+              <div className="flex flex-col">
+                <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-black bg-gradient-to-r from-red-600 via-pink-600 to-red-600 bg-clip-text text-transparent group-hover:from-red-500 group-hover:via-pink-500 group-hover:to-red-500 transition-all duration-300 tracking-tight leading-tight">SerieLat</span>
+                <span className="hidden sm:block text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wider uppercase">Movies & TV</span>
+              </div>
             </Link>
           
             {/* Desktop Navigation */}
@@ -170,10 +175,10 @@ export function Layout() {
                 {/* Search Icon Button */}
                 <button
                   onClick={toggleSearch}
-                  className="p-2.5 rounded-xl hover:bg-gradient-to-br hover:from-gray-100 hover:to-gray-50 dark:hover:from-gray-800 dark:hover:to-gray-800/50 transition-all duration-300 z-10 group"
+                  className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 hover:bg-gradient-to-br hover:from-red-50 hover:to-pink-50 dark:hover:from-red-900/20 dark:hover:to-pink-900/20 border border-transparent hover:border-red-200 dark:hover:border-red-800 transition-all duration-300 z-10 group shadow-sm hover:shadow-md"
                   aria-label="Search"
                 >
-                  <Search className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors duration-300" />
+                  <Search className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors duration-300" />
                 </button>
 
                 {/* Expandable Search Input */}
@@ -276,52 +281,42 @@ export function Layout() {
                 <div className="flex items-center gap-2">
                   <Link
                     to="/best-100"
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-yellow-500 via-orange-500 to-red-500 hover:from-yellow-400 hover:via-orange-400 hover:to-red-400 text-white transition-all duration-300 text-sm font-semibold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/50 hover:scale-105"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 hover:from-yellow-400 hover:via-orange-400 hover:to-red-400 text-white transition-all duration-300 text-sm font-bold shadow-lg shadow-orange-500/40 hover:shadow-xl hover:shadow-orange-500/60 hover:scale-105 hover:-translate-y-0.5"
                   >
-                    <Trophy className="w-4 h-4" />
+                    <Trophy className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                     <span className="hidden lg:inline">Best 100</span>
                   </Link>
 
                   <Link
                     to="/genres"
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-400 hover:via-purple-400 hover:to-pink-400 text-white transition-all duration-300 text-sm font-semibold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/50 hover:scale-105"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-400 hover:via-purple-400 hover:to-pink-400 text-white transition-all duration-300 text-sm font-bold shadow-lg shadow-purple-500/40 hover:shadow-xl hover:shadow-purple-500/60 hover:scale-105 hover:-translate-y-0.5"
                   >
-                    <ListFilter className="w-4 h-4" />
+                    <ListFilter className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                     <span className="hidden lg:inline">Genres</span>
                   </Link>
 
                   <Link
                     to="/years"
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 hover:from-blue-400 hover:via-cyan-400 hover:to-teal-400 text-white transition-all duration-300 text-sm font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/50 hover:scale-105"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500 hover:from-blue-400 hover:via-cyan-400 hover:to-teal-400 text-white transition-all duration-300 text-sm font-bold shadow-lg shadow-cyan-500/40 hover:shadow-xl hover:shadow-cyan-500/60 hover:scale-105 hover:-translate-y-0.5"
                   >
-                    <Calendar className="w-4 h-4" />
+                    <Calendar className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                     <span className="hidden lg:inline">Years</span>
                   </Link>
 
                   <Link
                     to="/popular-people"
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white transition-all duration-300 text-sm font-semibold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/50 hover:scale-105"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white transition-all duration-300 text-sm font-bold shadow-lg shadow-green-500/40 hover:shadow-xl hover:shadow-green-500/60 hover:scale-105 hover:-translate-y-0.5"
                   >
-                    <Users className="w-4 h-4" />
+                    <Users className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                     <span className="hidden lg:inline">People</span>
                   </Link>
                 </div>
               
-                {/* Separator */}
-                <div className="hidden lg:block w-px h-6 bg-gradient-to-b from-transparent via-gray-300 to-transparent dark:via-gray-700"></div>
-
-                {/* Dark Mode Toggle */}
-                <button
-                  onClick={toggleDarkMode}
-                  className="p-2.5 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 hover:from-gray-200 hover:to-gray-100 dark:hover:from-gray-700 dark:hover:to-gray-700/50 transition-all duration-300 shadow-sm hover:shadow-md group"
-                  aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                  title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                >
-                  {darkMode ? <Sun className="w-4 h-4 text-yellow-500 group-hover:rotate-45 transition-transform duration-300" /> : <Moon className="w-4 h-4 text-indigo-600 group-hover:rotate-12 transition-transform duration-300" />}
-                </button>
+                
+                
 
                 {/* Separator */}
-                <div className="hidden lg:block w-px h-6 bg-gradient-to-b from-transparent via-gray-300 to-transparent dark:via-gray-700"></div>
+                <div className="hidden lg:block w-px h-8 bg-gradient-to-b from-transparent via-gray-300 to-transparent dark:via-gray-600 mx-1"></div>
 
                 {/* User Section */}
                 {isAuthenticated ? (
@@ -343,11 +338,11 @@ export function Layout() {
                     </Link>
 
                     <Link
-                      to="/profile"
-                      className="p-2.5 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 hover:from-gray-200 hover:to-gray-100 dark:hover:from-gray-700 dark:hover:to-gray-700/50 transition-all duration-300 shadow-sm hover:shadow-md group"
-                      title={user?.name}
+                      to="/settings"
+                      className="p-2.5 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-105 group"
+                      title="Settings"
                     >
-                      <User className="w-4 h-4 text-gray-700 dark:text-gray-300 group-hover:scale-110 transition-transform duration-300" />
+                      <Settings className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
                     </Link>
 
                     {isAdmin && (
@@ -360,9 +355,27 @@ export function Layout() {
                       </Link>
                     )}
 
+                    {/* Welcome Message with Logout - Right Corner */}
+                    <div className="hidden lg:flex items-center gap-2 ml-2 px-3 py-2 rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-800">
+                      <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Welcome, <span className="text-blue-600 dark:text-blue-400 font-semibold">{user?.name}</span>
+                      </span>
+                      <div className="w-px h-4 bg-blue-300 dark:bg-blue-700 mx-1"></div>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-1 px-2 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 dark:bg-red-500/20 dark:hover:bg-red-500/30 transition-all duration-300 group"
+                        title="Logout"
+                      >
+                        <LogOut className="w-3.5 h-3.5 text-red-600 dark:text-red-400 group-hover:translate-x-0.5 transition-transform duration-300" />
+                        <span className="text-xs font-medium text-red-600 dark:text-red-400">Logout</span>
+                      </button>
+                    </div>
+
+                    {/* Mobile Logout Button */}
                     <button
                       onClick={handleLogout}
-                      className="p-2.5 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 dark:from-gray-700 dark:to-gray-800 hover:from-gray-700 hover:to-gray-800 dark:hover:from-gray-600 dark:hover:to-gray-700 text-white transition-all duration-300 shadow-lg hover:shadow-xl group"
+                      className="lg:hidden p-2.5 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 dark:from-gray-700 dark:to-gray-800 hover:from-gray-700 hover:to-gray-800 dark:hover:from-gray-600 dark:hover:to-gray-700 text-white transition-all duration-300 shadow-lg hover:shadow-xl group"
                       title="Logout"
                     >
                       <LogOut className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
@@ -398,7 +411,7 @@ export function Layout() {
                     input?.focus();
                   }, 100);
                 }}
-                className="p-2.5 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 hover:from-gray-200 hover:to-gray-100 dark:hover:from-gray-700 dark:hover:to-gray-700/50 transition-all duration-300 shadow-sm hover:shadow-md group"
+                className="p-3 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 hover:from-gray-200 hover:to-gray-100 dark:hover:from-gray-700 dark:hover:to-gray-700/50 transition-all duration-300 shadow-sm hover:shadow-md group active:scale-95"
                 aria-label="Search"
               >
                 <Search className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors duration-300" />
@@ -407,7 +420,7 @@ export function Layout() {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2.5 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 hover:from-gray-200 hover:to-gray-100 dark:hover:from-gray-700 dark:hover:to-gray-700/50 transition-all duration-300 shadow-sm hover:shadow-md"
+                className="p-3 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 hover:from-gray-200 hover:to-gray-100 dark:hover:from-gray-700 dark:hover:to-gray-700/50 transition-all duration-300 shadow-sm hover:shadow-md active:scale-95"
                 aria-label="Toggle menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5 text-gray-700 dark:text-gray-300" /> : <Menu className="w-5 h-5 text-gray-700 dark:text-gray-300" />}
@@ -618,20 +631,182 @@ export function Layout() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 flex-grow">
+      <main className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 flex-grow">
         <Outlet />
       </main>
 
-      <footer className="border-t bg-white/80 backdrop-blur-sm dark:bg-gray-900/80 dark:border-gray-800">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col items-center space-y-2 text-sm text-gray-600 dark:text-gray-400">
-            <p className="transition-colors duration-300 hover:text-gray-900 dark:hover:text-gray-200">All rights reserved to AUSH.</p>
-            <a 
-              href="mailto:alshrafi1999@gmail.com"
-              className="transition-colors duration-300 hover:text-red-600"
-            >
-              alshrafi1999@gmail.com
-            </a>
+      <footer className="border-t bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 dark:border-gray-700">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8 sm:py-10 md:py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-6 sm:mb-8">
+            {/* Brand Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Tv className="w-8 h-8 text-red-600" />
+                <span className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+                  SerieLat
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Your Gateway to Movies & TV Magic. Discover, explore, and enjoy the best entertainment content.
+              </p>
+              <div className="flex gap-3">
+                <a
+                  href="https://x.com/3bdurabu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300"
+                  aria-label="Twitter"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </a>
+                <a
+                  href="https://www.facebook.com/3bdurabu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-blue-600 hover:text-white transition-all duration-300"
+                  aria-label="Facebook"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                </a>
+                <a
+                  href="https://github.com/3bdrabu222"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-900 hover:text-white transition-all duration-300"
+                  aria-label="GitHub"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/abdurabu-saleh-ba7a7531a"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-blue-700 hover:text-white transition-all duration-300"
+                  aria-label="LinkedIn"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Links</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link to="/best-100" className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                    Best 100
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/genres" className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                    Browse Genres
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/years" className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                    Browse by Year
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/popular-people" className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                    Popular People
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Account */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Account</h3>
+              <ul className="space-y-2">
+                {isAuthenticated ? (
+                  <>
+                    <li>
+                      <Link to="/favorites" className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                        My Favorites
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/watch-later" className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                        Watch Later
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/profile" className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                        Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/settings" className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                        Settings
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <Link to="/login" className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                        Login
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/register" className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                        Sign Up
+                      </Link>
+                    </li>
+                  </>
+                )}
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Contact</h3>
+              <ul className="space-y-3">
+                <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <Mail className="w-4 h-4 text-red-600" />
+                  <a href="mailto:alshrafi1999@gmail.com" className="hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                    alshrafi1999@gmail.com
+                  </a>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <Phone className="w-4 h-4 text-red-600" />
+                  <a href="tel:+966552445377" className="hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                    +966 552 445 377
+                  </a>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <MapPin className="w-4 h-4 text-red-600" />
+                  <span>Saudi Arabia — Riyadh</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                2024 SerieLat. All rights reserved to AUSH.
+              </p>
+              <div className="flex gap-6 text-sm">
+                <Link to="/settings" className="text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                  Privacy Policy
+                </Link>
+                <Link to="/settings" className="text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                  Terms of Service
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </footer>

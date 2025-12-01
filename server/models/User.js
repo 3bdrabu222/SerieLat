@@ -34,7 +34,15 @@ const userSchema = new mongoose.Schema(
     verificationCodeExpires: {
       type: Date,
       select: false
-    }
+    },
+    favorite_people: [{
+      id: { type: String, required: true },
+      name: { type: String, required: true },
+      profile_path: String,
+      known_for_department: String,
+      popularity: Number,
+      addedAt: { type: Date, default: Date.now }
+    }]
   },
   { timestamps: true }
 );

@@ -34,6 +34,7 @@ import { DiscoverMovies } from './pages/DiscoverMovies';
 import { DiscoverTV } from './pages/DiscoverTV';
 import PopularPeople from './pages/PopularPeople';
 import PersonDetails from './pages/PersonDetails';
+import { Settings } from './pages/Settings';
 
 function App() {
   return (
@@ -102,6 +103,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <WatchLater />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
                     </ProtectedRoute>
                   }
                 />

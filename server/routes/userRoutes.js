@@ -5,7 +5,9 @@ import {
   getProfile,
   updateProfile,
   getAllUsers,
-  deleteUser
+  deleteUser,
+  changePassword,
+  deleteAccount
 } from '../controllers/userController.js';
 
 const router = express.Router();
@@ -13,6 +15,8 @@ const router = express.Router();
 // Protected routes (authenticated users only)
 router.get('/profile', authMiddleware, getProfile);
 router.put('/profile', authMiddleware, updateProfile);
+router.post('/change-password', authMiddleware, changePassword);
+router.delete('/delete-account', authMiddleware, deleteAccount);
 
 // Admin only routes
 router.get('/admin/users', authMiddleware, roleMiddleware('admin'), getAllUsers);

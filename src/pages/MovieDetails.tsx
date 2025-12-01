@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Loader2, Star, Calendar, Clock, DollarSign, Play, ExternalLink } from 'lucide-react';
+import { Loader2, Star, Calendar, Clock, DollarSign, Play, ExternalLink, User } from 'lucide-react';
 import { MovieDetails as MovieDetailsType, Cast, Movie } from '../types';
 import { TMDB_API_KEY, TMDB_BASE_URL, TMDB_IMAGE_BASE_URL } from '../lib/utils';
 import { AddToFavoriteButton } from '../components/AddToFavoriteButton';
 import { AddToWatchLaterButton } from '../components/AddToWatchLaterButton';
 import { MovieCard } from '../components/MovieCard';
+import { FavoritePersonButton } from '../components/FavoritePersonButton';
 
 export function MovieDetails() {
   const { id } = useParams<{ id: string }>();
@@ -224,32 +225,72 @@ export function MovieDetails() {
       {cast.length > 0 && (
         <section className="space-y-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Cast</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
             {cast.map((actor) => (
               <Link
                 key={actor.id}
-                to={`/actor/${actor.id}`}
-                className="group"
+                to={`/person/${actor.id}`}
+                className="group block relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
               >
-                <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105">
-                  <img
-                    src={actor.profile_path
-                      ? `${TMDB_IMAGE_BASE_URL}/w185${actor.profile_path}`
-                      : 'https://via.placeholder.com/185x278.png?text=No+Image'
-                    }
-                    alt={actor.name}
-                    className="w-full h-48 object-cover"
-                    loading="lazy"
-                  />
-                  <div className="p-3">
-                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm line-clamp-1">
-                      {actor.name}
-                    </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
-                      {actor.character}
-                    </p>
+                {/* Image Container */}
+                <div className="relative aspect-[2/3] overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900">
+                  {actor.profile_path ? (
+                    <img
+                      src={`${TMDB_IMAGE_BASE_URL}/w500${actor.profile_path}`}
+                      alt={actor.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-800">
+                      <User className="w-20 h-20 text-gray-500" />
+                    </div>
+                  )}
+                  
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                  
+                  {/* Character Badge */}
+                  {actor.character && (
+                    <div className="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold shadow-lg backdrop-blur-sm max-w-[80%]">
+                      <span className="line-clamp-1">{actor.character}</span>
+                    </div>
+                  )}
+
+                  {/* Favorite Button */}
+                  <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                    <FavoritePersonButton
+                      person={{
+                        id: actor.id.toString(),
+                        name: actor.name,
+                        profile_path: actor.profile_path,
+                        known_for_department: actor.known_for_department || 'Acting',
+                        popularity: 0
+                      }}
+                      variant="icon"
+                    />
                   </div>
                 </div>
+
+                {/* Info Section */}
+                <div className="p-4 space-y-2">
+                  {/* Name */}
+                  <h3 className="text-lg font-bold text-white line-clamp-1 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 group-hover:bg-clip-text transition-all duration-300">
+                    {actor.name}
+                  </h3>
+
+                  {/* Department */}
+                  {actor.known_for_department && (
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 rounded-full bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 text-indigo-300 text-xs font-medium">
+                        {actor.known_for_department}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Hover Effect Border */}
+                <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-purple-500/50 transition-all duration-300 pointer-events-none" />
               </Link>
             ))}
           </div>
