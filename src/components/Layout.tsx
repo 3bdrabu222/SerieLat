@@ -673,6 +673,88 @@ export function Layout() {
                   <span>People</span>
                 </Link>
 
+                <div className="border-t dark:border-gray-700 my-2"></div>
+                
+                <Link
+                  to="/trending"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location.pathname === '/trending'
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <TrendingUp className="w-4 h-4" />
+                  <span>Trending</span>
+                </Link>
+
+                <Link
+                  to="/release-calendar"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location.pathname === '/release-calendar'
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span>Release Calendar</span>
+                </Link>
+
+                <Link
+                  to="/latest-trailers"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location.pathname === '/latest-trailers'
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <Play className="w-4 h-4" />
+                  <span>Latest Trailers</span>
+                </Link>
+
+                <Link
+                  to="/whats-on-tv"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location.pathname === '/whats-on-tv'
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <Tv className="w-4 h-4" />
+                  <span>What's on TV</span>
+                </Link>
+
+                <Link
+                  to="/top-box-office"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location.pathname === '/top-box-office'
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <DollarSign className="w-4 h-4" />
+                  <span>Now in Cinema</span>
+                </Link>
+
+                <Link
+                  to="/born-today"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location.pathname === '/born-today'
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <Cake className="w-4 h-4" />
+                  <span>Born Today</span>
+                </Link>
+
+                <div className="border-t dark:border-gray-700 my-2"></div>
+
                 <Link
                   to="/serielat-ai"
                   onClick={() => setMobileMenuOpen(false)}
