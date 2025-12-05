@@ -242,7 +242,15 @@ export function SerieLatAI() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-200px)] flex">
+    <div className="min-h-[calc(100vh-200px)] flex relative">
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -251,40 +259,55 @@ export function SerieLatAI() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col fixed lg:relative h-[calc(100vh-200px)] z-50"
+            className="w-64 sm:w-72 lg:w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col fixed lg:relative h-[calc(100vh-200px)] z-50 shadow-2xl lg:shadow-none"
           >
             {/* Sidebar Header */}
-            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between mb-3 lg:hidden">
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Chat History</h2>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                </button>
+              </div>
               <button
-                onClick={startNewChat}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold shadow-lg transition-all duration-300 group"
+                onClick={() => {
+                  startNewChat();
+                  setSidebarOpen(false);
+                }}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 active:scale-95 text-white font-semibold shadow-lg transition-all duration-300 group touch-manipulation"
               >
                 <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-                <span>New Chat</span>
+                <span className="text-sm sm:text-base">New Chat</span>
               </button>
             </div>
 
             {/* Chat List */}
-            <div className="flex-1 overflow-y-auto p-2">
+            <div className="flex-1 overflow-y-auto p-2 sm:p-3">
               {chatSessions.length === 0 ? (
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
                   No chat history yet
                 </div>
               ) : (
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   {chatSessions.map((session) => (
                     <div
                       key={session.id}
-                      className={`group relative flex items-center gap-2 px-3 py-3 rounded-lg cursor-pointer transition-all duration-200 ${
+                      className={`group relative flex items-center gap-2 sm:gap-3 px-3 py-3 sm:py-3.5 rounded-lg cursor-pointer transition-all duration-200 touch-manipulation active:scale-98 ${
                         currentChatId === session.id
-                          ? 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700'
+                          ? 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700 shadow-sm'
                           : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
                       }`}
-                      onClick={() => switchChat(session.id)}
+                      onClick={() => {
+                        switchChat(session.id);
+                        setSidebarOpen(false);
+                      }}
                     >
-                      <MessageSquare className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                      <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                        <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-gray-100 truncate">
                           {session.title}
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -296,7 +319,7 @@ export function SerieLatAI() {
                           e.stopPropagation();
                           deleteChat(session.id);
                         }}
-                        className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded transition-all"
+                        className="opacity-100 lg:opacity-0 lg:group-hover:opacity-100 p-1.5 sm:p-2 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-all touch-manipulation active:scale-95"
                         title="Delete chat"
                       >
                         <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
@@ -311,10 +334,10 @@ export function SerieLatAI() {
       </AnimatePresence>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col w-full lg:w-auto">
         {/* Header */}
         <motion.div 
-          className="py-6 px-4 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-b border-gray-200 dark:border-gray-700"
+          className="py-4 sm:py-5 lg:py-6 px-3 sm:px-4 lg:px-6 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-b border-gray-200 dark:border-gray-700"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -322,34 +345,31 @@ export function SerieLatAI() {
           <div className="flex items-center justify-between max-w-4xl mx-auto">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-lg hover:bg-white/50 dark:hover:bg-gray-800/50 transition-colors"
+              className="p-2 sm:p-2.5 rounded-lg hover:bg-white/50 dark:hover:bg-gray-800/50 active:scale-95 transition-all touch-manipulation"
+              aria-label="Toggle sidebar"
             >
-              {sidebarOpen ? (
-                <X className="w-6 h-6 text-gray-700 dark:text-gray-300" />
-              ) : (
-                <Menu className="w-6 h-6 text-gray-700 dark:text-gray-300" />
-              )}
+              <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300" />
             </button>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 to-blue-600/30 blur-xl transition-all duration-500 rounded-full scale-150"></div>
-                <div className="relative p-2 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg shadow-purple-500/30">
-                  <Sparkles className="w-6 h-6 text-white" />
+                <div className="relative p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg shadow-purple-500/30">
+                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
                 SerieLat AI
               </h1>
             </div>
             
-            <div className="w-10"></div>
+            <div className="w-8 sm:w-10"></div>
           </div>
         </motion.div>
 
       {/* Chat Container */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-4xl mx-auto space-y-4">
+      <div className="flex-1 overflow-y-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-3 sm:space-y-4 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-4xl mx-auto space-y-3 sm:space-y-4">
           {messages.map((message, index) => (
             <motion.div
               key={message.id}
@@ -358,22 +378,22 @@ export function SerieLatAI() {
               transition={{ duration: 0.3, delay: index * 0.05 }}
               className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`flex gap-3 max-w-[85%] sm:max-w-[75%] ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+              <div className={`flex gap-2 sm:gap-3 max-w-[90%] sm:max-w-[85%] lg:max-w-[75%] ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                 {/* Avatar */}
-                <div className={`flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
+                <div className={`flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full flex items-center justify-center ${
                   message.sender === 'user' 
                     ? 'bg-gradient-to-br from-blue-600 to-blue-700 shadow-lg shadow-blue-500/30' 
                     : 'bg-gradient-to-br from-purple-600 to-purple-700 shadow-lg shadow-purple-500/30'
                 }`}>
                   {message.sender === 'user' ? (
-                    <User className="w-5 h-5 text-white" />
+                    <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   ) : (
-                    <Bot className="w-5 h-5 text-white" />
+                    <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   )}
                 </div>
 
                 {/* Message Bubble */}
-                <div className={`rounded-2xl px-4 py-3 shadow-md ${
+                <div className={`rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-md ${
                   message.sender === 'user'
                     ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white'
                     : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700'
@@ -381,7 +401,7 @@ export function SerieLatAI() {
                   <p className="text-sm sm:text-base whitespace-pre-wrap break-words leading-relaxed">
                     {message.text}
                   </p>
-                  <p className={`text-xs mt-2 ${
+                  <p className={`text-[10px] sm:text-xs mt-1.5 sm:mt-2 ${
                     message.sender === 'user' 
                       ? 'text-blue-200' 
                       : 'text-gray-500 dark:text-gray-400'
@@ -400,11 +420,11 @@ export function SerieLatAI() {
               animate={{ opacity: 1, y: 0 }}
               className="flex justify-start"
             >
-              <div className="flex gap-3 max-w-[75%]">
-                <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-purple-600 to-purple-700 shadow-lg shadow-purple-500/30">
-                  <Bot className="w-5 h-5 text-white" />
+              <div className="flex gap-2 sm:gap-3 max-w-[90%] sm:max-w-[85%] lg:max-w-[75%]">
+                <div className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-purple-600 to-purple-700 shadow-lg shadow-purple-500/30">
+                  <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <div className="rounded-2xl px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md">
+                <div className="rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md">
                   <div className="flex items-center gap-2">
                     <Loader2 className="w-5 h-5 text-purple-600 dark:text-purple-400 animate-spin" />
                     <span className="text-sm text-gray-600 dark:text-gray-400">AI is thinking...</span>
@@ -419,30 +439,30 @@ export function SerieLatAI() {
       </div>
 
       {/* Input Area - Fixed at Bottom */}
-      <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-4 shadow-lg">
+      <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 shadow-lg">
         <div className="max-w-4xl mx-auto">
-          <form onSubmit={sendMessage} className="flex gap-3">
+          <form onSubmit={sendMessage} className="flex gap-2 sm:gap-3">
             <input
               ref={inputRef}
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask me anything about movies, series, actors..."
+              placeholder="Ask about movies, series..."
               disabled={isLoading}
-              className="flex-1 px-4 py-3 sm:py-3.5 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm sm:text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 lg:py-3.5 rounded-lg sm:rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm sm:text-base placeholder:text-gray-400 dark:placeholder:text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 touch-manipulation"
             />
             <button
               type="submit"
               disabled={!inputValue.trim() || isLoading}
-              className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg transition-all duration-300 flex items-center gap-2 group"
+              className="px-4 sm:px-5 lg:px-6 py-2.5 sm:py-3 lg:py-3.5 rounded-lg sm:rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 active:scale-95 text-white font-semibold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg transition-all duration-300 flex items-center gap-1.5 sm:gap-2 group touch-manipulation"
             >
-              <span className="hidden sm:inline">Send</span>
-              <Send className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+              <span className="hidden sm:inline text-sm sm:text-base">Send</span>
+              <Send className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </form>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
-            Press Enter to send • Chat history is saved locally
+          <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-2 sm:mt-3 text-center px-2">
+            <span className="hidden sm:inline">Press Enter to send • </span>Chat history saved locally
           </p>
         </div>
       </div>

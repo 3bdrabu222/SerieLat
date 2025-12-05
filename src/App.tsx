@@ -36,6 +36,12 @@ import PopularPeople from './pages/PopularPeople';
 import PersonDetails from './pages/PersonDetails';
 import { Settings } from './pages/Settings';
 import { SerieLatAI } from './pages/SerieLatAI';
+import { ReleaseCalendar } from './pages/ReleaseCalendar';
+import { LatestTrailers } from './pages/LatestTrailers';
+import { WhatsOnTV } from './pages/WhatsOnTV';
+import { BornToday } from './pages/BornToday';
+import { TopBoxOffice } from './pages/TopBoxOffice';
+import { TrendingThisWeek } from './pages/TrendingThisWeek';
 
 function App() {
   return (
@@ -77,6 +83,14 @@ function App() {
                 <Route path="/movie/:id" element={<MovieDetails />} />
                 <Route path="/discover/movies" element={<DiscoverMovies />} />
                 <Route path="/discover/tv" element={<DiscoverTV />} />
+                
+                {/* New Feature Pages */}
+                <Route path="/release-calendar" element={<ReleaseCalendar />} />
+                <Route path="/latest-trailers" element={<LatestTrailers />} />
+                <Route path="/whats-on-tv" element={<WhatsOnTV />} />
+                <Route path="/born-today" element={<BornToday />} />
+                <Route path="/top-box-office" element={<TopBoxOffice />} />
+                <Route path="/trending" element={<TrendingThisWeek />} />
                 
                 {/* AI Assistant */}
                 <Route path="/serielat-ai" element={<SerieLatAI />} />

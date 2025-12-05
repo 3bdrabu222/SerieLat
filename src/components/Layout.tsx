@@ -1,10 +1,18 @@
 import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Tv, Search, Moon, Sun, ListFilter, Calendar, X, User, Shield, LogOut, Heart, Clock, Trophy, Film, Menu, Users, Settings, Mail, Phone, MapPin, Sparkles } from 'lucide-react';
+import { Tv, Search, ListFilter, Calendar, X, User, Shield, LogOut, Heart, Clock, Trophy, Film, Menu, Users, Mail, Phone, MapPin, Sparkles, ChevronDown, TrendingUp, DollarSign, Play, Cake } from 'lucide-react';
 import { cn, TMDB_API_KEY, TMDB_BASE_URL } from '../lib/utils';
-import { TVSeries, Movie } from '../types';
+import { TVSeries } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { ChatBot } from './ChatBot';
+
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string | null;
+  release_date: string;
+  media_type: 'movie';
+}
 
 interface PersonResult {
   id: number;
@@ -27,9 +35,11 @@ export function Layout() {
   const [isSearching, setIsSearching] = React.useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [searchExpanded, setSearchExpanded] = React.useState(false);
+  const [moreMenuOpen, setMoreMenuOpen] = React.useState(false);
   const searchDebounceRef = React.useRef<ReturnType<typeof setTimeout>>();
   const searchResultsRef = React.useRef<HTMLDivElement>(null);
   const searchContainerRef = React.useRef<HTMLDivElement>(null);
+  const moreMenuRef = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, isAdmin, user, logout } = useAuth();
@@ -52,6 +62,9 @@ export function Layout() {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
         setSearchExpanded(false);
       }
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) {
+        setMoreMenuOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -62,6 +75,7 @@ export function Layout() {
       if (event.key === 'Escape') {
         setSearchExpanded(false);
         setIsSearching(false);
+        setMoreMenuOpen(false);
       }
     };
     document.addEventListener('keydown', handleEscape);
@@ -326,6 +340,71 @@ export function Layout() {
                     <Users className="w-4 h-4" />
                     <span className="hidden lg:inline">People</span>
                   </Link>
+
+                  {/* More Dropdown */}
+                  <div ref={moreMenuRef} className="relative">
+                    <button
+                      onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      <Menu className="w-4 h-4" />
+                      <span className="hidden lg:inline">More</span>
+                      <ChevronDown className={`w-3 h-3 transition-transform ${moreMenuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {moreMenuOpen && (
+                      <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 py-2 z-50">
+                        <Link
+                          to="/trending"
+                          onClick={() => setMoreMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <TrendingUp className="w-4 h-4 text-red-600 dark:text-red-500" />
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">Trending</span>
+                        </Link>
+                        <Link
+                          to="/release-calendar"
+                          onClick={() => setMoreMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-500" />
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">Release Calendar</span>
+                        </Link>
+                        <Link
+                          to="/latest-trailers"
+                          onClick={() => setMoreMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <Play className="w-4 h-4 text-purple-600 dark:text-purple-500" />
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">Latest Trailers</span>
+                        </Link>
+                        <Link
+                          to="/whats-on-tv"
+                          onClick={() => setMoreMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <Tv className="w-4 h-4 text-indigo-600 dark:text-indigo-500" />
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">What's on TV</span>
+                        </Link>
+                        <Link
+                          to="/top-box-office"
+                          onClick={() => setMoreMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <DollarSign className="w-4 h-4 text-green-600 dark:text-green-500" />
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">Now in Cinema</span>
+                        </Link>
+                        <Link
+                          to="/born-today"
+                          onClick={() => setMoreMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <Cake className="w-4 h-4 text-pink-600 dark:text-pink-500" />
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">Born Today</span>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
 
                   <Link
                     to="/serielat-ai"

@@ -1,8 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Loader2, Film, TrendingUp, Star } from 'lucide-react';
 import { MovieCard } from '../components/MovieCard';
-import { Movie } from '../types';
 import { TMDB_API_KEY, TMDB_BASE_URL } from '../lib/utils';
+
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  backdrop_path?: string;
+  overview: string;
+  release_date: string;
+  vote_average: number;
+}
 
 export function Movies() {
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);

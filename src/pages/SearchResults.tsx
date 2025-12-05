@@ -4,8 +4,18 @@ import { Loader2, Search, Film, Tv, Users } from 'lucide-react';
 import { TVSeriesCard } from '../components/TVSeriesCard';
 import { MovieCard } from '../components/MovieCard';
 import PersonCard from '../components/PersonCard';
-import { TVSeries, Movie } from '../types';
+import { TVSeries } from '../types';
 import { TMDB_API_KEY, TMDB_BASE_URL } from '../lib/utils';
+
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  backdrop_path?: string;
+  overview: string;
+  release_date: string;
+  vote_average: number;
+}
 
 interface Person {
   id: number;
