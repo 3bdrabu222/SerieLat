@@ -35,6 +35,7 @@ import { DiscoverTV } from './pages/DiscoverTV';
 import PopularPeople from './pages/PopularPeople';
 import PersonDetails from './pages/PersonDetails';
 import { Settings } from './pages/Settings';
+import { SerieLatAI } from './pages/SerieLatAI';
 
 function App() {
   return (
@@ -76,6 +77,9 @@ function App() {
                 <Route path="/movie/:id" element={<MovieDetails />} />
                 <Route path="/discover/movies" element={<DiscoverMovies />} />
                 <Route path="/discover/tv" element={<DiscoverTV />} />
+                
+                {/* AI Assistant */}
+                <Route path="/serielat-ai" element={<SerieLatAI />} />
                 
                 {/* Auth Routes */}
                 <Route path="/login" element={<Login />} />

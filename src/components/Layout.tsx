@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { Tv, Search, Moon, Sun, ListFilter, Calendar, X, User, Shield, LogOut, Heart, Clock, Trophy, Film, Menu, Users, Settings, Mail, Phone, MapPin } from 'lucide-react';
+import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Tv, Search, Moon, Sun, ListFilter, Calendar, X, User, Shield, LogOut, Heart, Clock, Trophy, Film, Menu, Users, Settings, Mail, Phone, MapPin, Sparkles } from 'lucide-react';
 import { cn, TMDB_API_KEY, TMDB_BASE_URL } from '../lib/utils';
 import { TVSeries, Movie } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -31,6 +31,7 @@ export function Layout() {
   const searchResultsRef = React.useRef<HTMLDivElement>(null);
   const searchContainerRef = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, isAdmin, user, logout } = useAuth();
 
   React.useEffect(() => {
@@ -150,41 +151,40 @@ export function Layout() {
       "min-h-screen bg-gray-50 text-gray-900 flex flex-col",
       "dark:bg-gray-900 dark:text-gray-100"
     )}>
-      <header className="sticky top-0 z-50 border-b border-gray-200/80 dark:border-gray-700/80 bg-white/95 backdrop-blur-2xl dark:bg-gray-900/95 shadow-lg shadow-gray-200/50 dark:shadow-gray-900/50 transition-all duration-300">
+      <header className="sticky top-0 z-50 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-300">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Main Header Row */}
-          <div className="flex items-center justify-between h-16 md:h-20 lg:h-24">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
+          <div className="flex items-center justify-between h-16 lg:h-18">
+            {/* Logo - Modern Minimal with Beautiful Hover */}
+            <Link to="/" className="flex items-center gap-3 group flex-shrink-0 transition-all duration-300">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-red-600/30 to-pink-600/30 blur-xl sm:blur-2xl group-hover:from-red-600/40 group-hover:to-pink-600/40 transition-all duration-500 rounded-full scale-150"></div>
-                <div className="relative p-1.5 sm:p-2 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-600 to-pink-600 group-hover:from-red-500 group-hover:to-pink-500 shadow-lg shadow-red-500/30 group-hover:shadow-xl group-hover:shadow-red-500/50 transition-all duration-300">
-                  <Tv className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white transition-all duration-300 group-hover:scale-110 group-hover:rotate-6" />
+                {/* Animated glow effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-rose-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-all duration-500 scale-150"></div>
+                <div className="relative w-10 h-10 lg:w-11 lg:h-11 rounded-2xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-lg shadow-red-500/20 group-hover:shadow-red-500/60 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
+                  <Tv className="w-5 h-5 lg:w-6 lg:h-6 text-white group-hover:scale-110 transition-transform duration-300" />
                 </div>
               </div>
               <div className="flex flex-col">
-                <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-black bg-gradient-to-r from-red-600 via-pink-600 to-red-600 bg-clip-text text-transparent group-hover:from-red-500 group-hover:via-pink-500 group-hover:to-red-500 transition-all duration-300 tracking-tight leading-tight">SerieLat</span>
-                <span className="hidden sm:block text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wider uppercase">Movies & TV</span>
+                <span className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent group-hover:from-red-500 group-hover:to-rose-600 transition-all duration-300 tracking-tight">SerieLat</span>
+                <span className="hidden sm:block text-[10px] text-gray-500 dark:text-gray-400 group-hover:text-red-500 dark:group-hover:text-red-400 font-medium tracking-wide transition-colors duration-300">Movies & TV Shows</span>
               </div>
             </Link>
           
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-2 lg:gap-3 flex-1 justify-end">
-              {/* Expandable Search */}
+            <div className="hidden md:flex items-center gap-3 lg:gap-4 flex-1 justify-end">
+              {/* Modern Search Bar */}
               <div ref={searchContainerRef} className="relative flex items-center">
-                {/* Search Icon Button */}
                 <button
                   onClick={toggleSearch}
-                  className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 hover:bg-gradient-to-br hover:from-red-50 hover:to-pink-50 dark:hover:from-red-900/20 dark:hover:to-pink-900/20 border border-transparent hover:border-red-200 dark:hover:border-red-800 transition-all duration-300 z-10 group shadow-sm hover:shadow-md"
+                  className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 z-10"
                   aria-label="Search"
                 >
-                  <Search className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors duration-300" />
+                  <Search className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                 </button>
 
-                {/* Expandable Search Input */}
                 <div
                   className={`absolute right-0 top-0 transition-all duration-300 ease-in-out ${
-                    searchExpanded ? 'opacity-100 w-64 lg:w-80' : 'opacity-0 w-0 pointer-events-none'
+                    searchExpanded ? 'opacity-100 w-72 lg:w-96' : 'opacity-0 w-0 pointer-events-none'
                   }`}
                 >
                   <form onSubmit={handleSearch} className="relative">
@@ -194,8 +194,8 @@ export function Layout() {
                       value={searchQuery}
                       onChange={(e) => handleSearchInput(e.target.value)}
                       onFocus={() => setIsSearching(true)}
-                      placeholder="Search movies & series..."
-                      className="w-full pl-11 pr-10 py-2.5 rounded-2xl bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-800 dark:to-gray-800/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50 text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                      placeholder="Search movies, series, people..."
+                      className="w-full pl-11 pr-10 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent shadow-lg text-sm placeholder:text-gray-400"
                     />
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
                     {searchQuery && (
@@ -277,38 +277,66 @@ export function Layout() {
               </div>
 
               <div className="flex items-center gap-2">
-                {/* Main Navigation - 3 Clean Buttons */}
-                <div className="flex items-center gap-2">
+                {/* Modern Navigation Pills with Active State */}
+                <div className="flex items-center gap-1.5">
                   <Link
                     to="/best-100"
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 hover:from-yellow-400 hover:via-orange-400 hover:to-red-400 text-white transition-all duration-300 text-sm font-bold shadow-lg shadow-orange-500/40 hover:shadow-xl hover:shadow-orange-500/60 hover:scale-105 hover:-translate-y-0.5"
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      location.pathname.startsWith('/best-')
+                        ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-red-600 dark:hover:text-red-400'
+                    }`}
                   >
-                    <Trophy className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                    <Trophy className="w-4 h-4" />
                     <span className="hidden lg:inline">Best 100</span>
                   </Link>
 
                   <Link
                     to="/genres"
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-400 hover:via-purple-400 hover:to-pink-400 text-white transition-all duration-300 text-sm font-bold shadow-lg shadow-purple-500/40 hover:shadow-xl hover:shadow-purple-500/60 hover:scale-105 hover:-translate-y-0.5"
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      location.pathname.startsWith('/genre')
+                        ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-red-600 dark:hover:text-red-400'
+                    }`}
                   >
-                    <ListFilter className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                    <ListFilter className="w-4 h-4" />
                     <span className="hidden lg:inline">Genres</span>
                   </Link>
 
                   <Link
                     to="/years"
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500 hover:from-blue-400 hover:via-cyan-400 hover:to-teal-400 text-white transition-all duration-300 text-sm font-bold shadow-lg shadow-cyan-500/40 hover:shadow-xl hover:shadow-cyan-500/60 hover:scale-105 hover:-translate-y-0.5"
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      location.pathname.startsWith('/year')
+                        ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-red-600 dark:hover:text-red-400'
+                    }`}
                   >
-                    <Calendar className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                    <Calendar className="w-4 h-4" />
                     <span className="hidden lg:inline">Years</span>
                   </Link>
 
                   <Link
                     to="/popular-people"
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-400 hover:via-emerald-400 hover:to-teal-400 text-white transition-all duration-300 text-sm font-bold shadow-lg shadow-green-500/40 hover:shadow-xl hover:shadow-green-500/60 hover:scale-105 hover:-translate-y-0.5"
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      location.pathname === '/popular-people'
+                        ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-red-600 dark:hover:text-red-400'
+                    }`}
                   >
-                    <Users className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                    <Users className="w-4 h-4" />
                     <span className="hidden lg:inline">People</span>
+                  </Link>
+
+                  <Link
+                    to="/serielat-ai"
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-white text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200 ${
+                      location.pathname === '/serielat-ai'
+                        ? 'bg-gradient-to-r from-red-600 to-rose-700 shadow-lg shadow-red-500/30'
+                        : 'bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700'
+                    }`}
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    <span className="hidden lg:inline">AI</span>
                   </Link>
                 </div>
               
@@ -316,82 +344,83 @@ export function Layout() {
                 
 
                 {/* Separator */}
-                <div className="hidden lg:block w-px h-8 bg-gradient-to-b from-transparent via-gray-300 to-transparent dark:via-gray-600 mx-1"></div>
+                <div className="hidden lg:block w-px h-6 bg-gray-200 dark:bg-gray-700 mx-2"></div>
 
-                {/* User Section */}
+                {/* User Actions - Modern Icons with Active State */}
                 {isAuthenticated ? (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <Link
                       to="/favorites"
-                      className="p-2.5 rounded-xl bg-gradient-to-br from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white transition-all duration-300 shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 hover:scale-105 group"
-                      title="My Favorites"
+                      className={`p-2 rounded-lg transition-all duration-200 ${
+                        location.pathname === '/favorites'
+                          ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                          : 'text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400'
+                      }`}
+                      title="Favorites"
                     >
-                      <Heart className="w-4 h-4 group-hover:fill-current transition-all duration-300" />
+                      <Heart className={`w-5 h-5 ${location.pathname === '/favorites' ? 'fill-current' : ''}`} />
                     </Link>
 
                     <Link
                       to="/watch-later"
-                      className="p-2.5 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-105 group"
+                      className={`p-2 rounded-lg transition-all duration-200 ${
+                        location.pathname === '/watch-later'
+                          ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-sm'
+                          : 'text-gray-600 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400'
+                      }`}
                       title="Watch Later"
                     >
-                      <Clock className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
-                    </Link>
-
-                    <Link
-                      to="/settings"
-                      className="p-2.5 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-105 group"
-                      title="Settings"
-                    >
-                      <Settings className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+                      <Clock className="w-5 h-5" />
                     </Link>
 
                     {isAdmin && (
                       <Link
                         to="/admin"
-                        className="p-2.5 rounded-xl bg-gradient-to-br from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white transition-all duration-300 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105 group"
-                        title="Admin Panel"
+                        className="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-200"
+                        title="Admin"
                       >
-                        <Shield className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
+                        <Shield className="w-5 h-5" />
                       </Link>
                     )}
 
-                    {/* Welcome Message with Logout - Right Corner */}
-                    <div className="hidden lg:flex items-center gap-2 ml-2 px-3 py-2 rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-800">
-                      <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Welcome, <span className="text-blue-600 dark:text-blue-400 font-semibold">{user?.name}</span>
-                      </span>
-                      <div className="w-px h-4 bg-blue-300 dark:bg-blue-700 mx-1"></div>
+                    {/* User Menu */}
+                    <div className="hidden lg:flex items-center gap-2 ml-2 pl-2 border-l border-gray-200 dark:border-gray-700">
+                      <Link
+                        to="/settings"
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+                      >
+                        <User className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{user?.name}</span>
+                      </Link>
                       <button
                         onClick={handleLogout}
-                        className="flex items-center gap-1 px-2 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 dark:bg-red-500/20 dark:hover:bg-red-500/30 transition-all duration-300 group"
+                        className="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all duration-200"
                         title="Logout"
                       >
-                        <LogOut className="w-3.5 h-3.5 text-red-600 dark:text-red-400 group-hover:translate-x-0.5 transition-transform duration-300" />
-                        <span className="text-xs font-medium text-red-600 dark:text-red-400">Logout</span>
+                        <LogOut className="w-4 h-4" />
                       </button>
                     </div>
 
-                    {/* Mobile Logout Button */}
+                    {/* Mobile Logout */}
                     <button
                       onClick={handleLogout}
-                      className="lg:hidden p-2.5 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 dark:from-gray-700 dark:to-gray-800 hover:from-gray-700 hover:to-gray-800 dark:hover:from-gray-600 dark:hover:to-gray-700 text-white transition-all duration-300 shadow-lg hover:shadow-xl group"
+                      className="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all duration-200"
                       title="Logout"
                     >
-                      <LogOut className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
+                      <LogOut className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
                     <Link
                       to="/login"
-                      className="px-4 py-2 rounded-xl hover:bg-gradient-to-br hover:from-gray-100 hover:to-gray-50 dark:hover:from-gray-800 dark:hover:to-gray-800/50 transition-all duration-300 text-xs font-medium text-gray-700 dark:text-gray-300"
+                      className="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
                     >
                       Login
                     </Link>
                     <Link
                       to="/register"
-                      className="px-4 py-2 rounded-xl bg-gradient-to-br from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white transition-all duration-300 text-xs font-semibold shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 hover:scale-105"
+                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-rose-600 text-white text-sm font-medium hover:from-red-600 hover:to-rose-700 shadow-sm hover:shadow-md transition-all duration-200"
                     >
                       Sign Up
                     </Link>
@@ -511,42 +540,71 @@ export function Layout() {
                 </div>
               )}
 
-              {/* Mobile Navigation Links */}
+              {/* Mobile Navigation Links with Active State */}
               <div className="space-y-1 px-2">
                 <Link
                   to="/best-100"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 text-white transition-colors"
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location.pathname.startsWith('/best-')
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
                 >
                   <Trophy className="w-4 h-4" />
-                  <span className="text-sm font-medium">Best 100</span>
+                  <span>Best 100</span>
                 </Link>
 
                 <Link
                   to="/genres"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white transition-colors"
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location.pathname.startsWith('/genre')
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
                 >
                   <ListFilter className="w-4 h-4" />
-                  <span className="text-sm font-medium">Genres</span>
+                  <span>Genres</span>
                 </Link>
 
                 <Link
                   to="/years"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white transition-colors"
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location.pathname.startsWith('/year')
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
                 >
                   <Calendar className="w-4 h-4" />
-                  <span className="text-sm font-medium">Years</span>
+                  <span>Years</span>
                 </Link>
 
                 <Link
                   to="/popular-people"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 text-white transition-colors"
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location.pathname === '/popular-people'
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
                 >
                   <Users className="w-4 h-4" />
-                  <span className="text-sm font-medium">People</span>
+                  <span>People</span>
+                </Link>
+
+                <Link
+                  to="/serielat-ai"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    location.pathname === '/serielat-ai'
+                      ? 'bg-gradient-to-r from-red-600 to-rose-700 text-white shadow-lg shadow-red-500/30'
+                      : 'bg-gradient-to-r from-red-500 to-rose-600 text-white hover:from-red-600 hover:to-rose-700'
+                  }`}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>SerieLat AI</span>
                 </Link>
 
                 {isAuthenticated && (
@@ -556,28 +614,40 @@ export function Layout() {
                     <Link
                       to="/favorites"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+                        location.pathname === '/favorites'
+                          ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 shadow-sm'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      }`}
                     >
-                      <Heart className="w-4 h-4" />
-                      <span className="text-sm">Favorites</span>
+                      <Heart className={`w-4 h-4 ${location.pathname === '/favorites' ? 'fill-current' : ''}`} />
+                      <span>Favorites</span>
                     </Link>
 
                     <Link
                       to="/watch-later"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+                        location.pathname === '/watch-later'
+                          ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-sm'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      }`}
                     >
                       <Clock className="w-4 h-4" />
-                      <span className="text-sm">Watch Later</span>
+                      <span>Watch Later</span>
                     </Link>
 
                     <Link
                       to="/profile"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+                        location.pathname === '/profile'
+                          ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      }`}
                     >
                       <User className="w-4 h-4" />
-                      <span className="text-sm">Profile</span>
+                      <span>Profile</span>
                     </Link>
 
                     {isAdmin && (
